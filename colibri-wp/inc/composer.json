@@ -1,0 +1,21 @@
+{
+  "name": "colibriwp/colibri-theme",
+  "license": "GPL",
+  "authors": [
+    {
+      "name": "ColibriWP",
+      "email": "support@colibriwp.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "ColibriWP\\Theme\\": "src/"
+    },
+    "files": [
+      "template-functions.php"
+    ]
+  },
+  "require": {
+    "php": ">=5.6.0"
+  }
+}
