@@ -1,4 +1,4 @@
-=== ColibriWP ===
+=== ColibriWP 
 
 Contributors: extendthemes
 Tags: entertainment, food-and-drink, portfolio, one-column, two-columns, right-sidebar, grid-layout, custom-header, custom-menu, custom-logo, full-width-template, theme-options, translation-ready, featured-images, threaded-comments
@@ -8,19 +8,19 @@ License: GPLv3 or later
 License URI:
 Requires PHP: 5.6
 
-== Description ==
+== Description 
 
 ColibriWP is a very flexible, multipurpose WordPress theme that takes the Customizer to the next level.
 
 
-== Frequently Asked Questions ==
+== Frequently Asked Questions 
 
 = How can I customize ColibriWP? =
 
     To customize the ColibriWP theme you have to open the Customizer by accessing the Appearance menu -> Customizer.
 
 
-== License ==
+== License 
 
 Mesmerize WordPress theme, Copyright (C) 2019 ExtendThemes
 Mesmerize WordPress theme is licensed under the GPL3.
