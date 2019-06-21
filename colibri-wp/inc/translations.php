@@ -9,6 +9,7 @@ return array(
 	'header_sections'             => __( 'Header Sections', 'colibri-wp' ),
 	'footer_sections'             => __( 'Footer Sections', 'colibri-wp' ),
 	'content_sections'            => __( 'Content Sections', 'colibri-wp' ),
+	'content_settings'            => __( 'Content Settings', 'colibri-wp' ),
 	'general_settings'            => __( 'General Settings', 'colibri-wp' ),
 	'top_bar_settings'            => __( 'Top Bar Settings', 'colibri-wp' ),
 	'nav_settings'                => __( 'Navigation Settings', 'colibri-wp' ),

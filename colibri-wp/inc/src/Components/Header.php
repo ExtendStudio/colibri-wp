@@ -46,13 +46,13 @@ class Header extends ComponentBase {
 					'title'          => Translations::get( 'header_sections' ),
 					'type'           => 'colibri_panel',
 					'footer_buttons' => array(
-						'change_header' => array(
-							'label'         => 'Change Header',
-							'name'          => 'colibriwp_headers_panel',
-							'activate_when' => array(
-								'selector' => Defaults::get( 'header_front_page.hero.selective_selector', false )
-							)
-						)
+//						'change_header' => array(
+//							'label'         => 'Change Header',
+//							'name'          => 'colibriwp_headers_panel',
+//							'activate_when' => array(
+//								'selector' => Defaults::get( 'header_front_page.hero.selective_selector', false )
+//							)
+//						)
 					)
 				),
 			),

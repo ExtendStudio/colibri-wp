@@ -22,7 +22,7 @@ class PageContent extends ComponentBase {
 		return array(
 			"sections" => array(
 				"{$prefix}section" => array(
-					'title' => Translations::get( 'content_sections' ),
+					'title' => Translations::get( 'content_settings' ),
 					'panel' => 'content_panel',
 					'type'  => 'colibri_section',
 				)

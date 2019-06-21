@@ -431,7 +431,7 @@ class Image extends ComponentBase {
 			$image = $placeholder;
 		}
 		?>
-        <img src="<?php echo esc_attr( $image ); ?>" alt="" class="<?php echo esc_attr( $classes ); ?>">
+        <img src="<?php echo esc_attr( $image ); ?>" alt="" class="<?php echo esc_attr( $classes ); ?>" />
 		<?php
 	}
 

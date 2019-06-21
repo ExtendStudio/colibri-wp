@@ -63,6 +63,10 @@ let themeHead = "/*\n" +
     " Text Domain:  colibri-wp\n" +
     "*/\n";
 
+if (!Mix.inProduction()) {
+    themeHead = "";
+}
+
 Mix.listen('build', () => {
     const css = fs.readFileSync("./resources/theme/theme.css", "utf8");
     const output = postcss()
