@@ -9,8 +9,8 @@
 namespace ColibriWP\Theme\Components\FrontHeader;
 
 
-use ColibriWP\Theme\Core\ComponentBase;
 use ColibriWP\Theme\Components\CSSOutput;
+use ColibriWP\Theme\Core\ComponentBase;
 use ColibriWP\Theme\Defaults;
 use ColibriWP\Theme\Translations;
 use ColibriWP\Theme\View;
@@ -22,15 +22,6 @@ class Image extends ComponentBase {
 
 	public static function selectiveRefreshSelector() {
 		return Defaults::get( static::$settings_prefix . 'selective_selector', false );
-	}
-
-	public function renderContent() {
-
-		//if ( $this->mod( static::$settings_prefix . 'show' ) ) {
-		View::partial( 'front-header', 'image', array(
-			"component" => $this,
-		) );
-		//}
 	}
 
 	/**
@@ -53,7 +44,7 @@ class Image extends ComponentBase {
 			),
 
 			"settings" => array(
-				"{$prefix}localProps.url"       => array(
+				"{$prefix}localProps.url" => array(
 					'default' => Defaults::get( "{$prefix}localProps.url" ),
 					'control' => array(
 						'label'       => Translations::get( 'image' ),
@@ -62,17 +53,17 @@ class Image extends ComponentBase {
 						'colibri_tab' => "content",
 					),
 				),
-//box shadow
+
 				"{$prefix_shadow}layers.0" => array(
-					'default'    => Defaults::get( "{$prefix_shadow}layers.0" ),
-					'control'    => array(
+					'default'      => Defaults::get( "{$prefix_shadow}layers.0" ),
+					'control'      => array(
 						'label'       => Translations::get( 'box_shadow' ),
 						'type'        => 'composed',
 						'input_type'  => 'switch',
 						'section'     => "{$prefix}section",
 						'colibri_tab' => 'content',
 						'fields'      => array(
-							'x' => array(
+							'x'      => array(
 								'type'    => 'slider',
 								'label'   => Translations::get( 'horizontal' ),
 								'default' => Defaults::get( "{$prefix_shadow}layers.0.x" ),
@@ -81,8 +72,7 @@ class Image extends ComponentBase {
 									'max' => 100,
 								)
 							),
-
-							'y' => array(
+							'y'      => array(
 								'type'    => 'slider',
 								'label'   => Translations::get( 'vertical' ),
 								'default' => Defaults::get( "{$prefix_shadow}layers.0.y" ),
@@ -92,7 +82,6 @@ class Image extends ComponentBase {
 
 								)
 							),
-
 							'spread' => array(
 								'type'    => 'slider',
 								'label'   => Translations::get( 'spread' ),
@@ -122,11 +111,10 @@ class Image extends ComponentBase {
 								'props'   => array(
 									'inline' => true,
 								),
-								'default' => '#000000',
 							),
 						)
 					),
-					'css_output' => array(
+					'css_output'   => array(
 						array(
 							'selector'      => "{$selector} img",
 							'media'         => CSSOutput::NO_MEDIA,
@@ -144,8 +132,8 @@ class Image extends ComponentBase {
 				),
 
 				"{$prefix_shadow}enabled"   => array(
-					'default'   => Defaults::get( "{$prefix_shadow}enabled" ),
-					'control'   => array(
+					'default'    => Defaults::get( "{$prefix_shadow}enabled" ),
+					'control'    => array(
 						'label'       => Translations::get( 'box_shadow' ),
 						'input_type'  => 'switch',
 						'type'        => 'group',
@@ -158,10 +146,9 @@ class Image extends ComponentBase {
 					),
 					'css_output' => array(
 						array(
-							'selector'      => "{$selector} img",
+							'selector'    => "{$selector} img",
 							'media'       => CSSOutput::NO_MEDIA,
-							'property'      => 'box-shadow',
-							'true_value'  => '',
+							'property'    => 'box-shadow',
 							'false_value' => 'none',
 						),
 					),
@@ -182,7 +169,7 @@ class Image extends ComponentBase {
 					'css_output' => array(
 						array(
 							'selector' => "{$selector} div.h-image__frame",
-							'media'         => CSSOutput::NO_MEDIA,
+							'media'    => CSSOutput::NO_MEDIA,
 							'property' => 'border-style',
 							'value'    => array(
 								'border'     => 'solid',
@@ -191,7 +178,7 @@ class Image extends ComponentBase {
 						),
 						array(
 							'selector' => "{$selector} div.h-image__frame",
-							'media'         => CSSOutput::NO_MEDIA,
+							'media'    => CSSOutput::NO_MEDIA,
 							'property' => 'background-color',
 							'value'    => array(
 								'border'     => 'transparent',
@@ -336,6 +323,13 @@ class Image extends ComponentBase {
 						'min'         => 0,
 						'max'         => 100,
 					),
+					'active_rules' => array(
+						array(
+							"setting"  => "{$prefix}props.frame.type",
+							"operator" => "=",
+							"value"    => "border",
+						),
+					),
 					'css_output' => array(
 						array(
 							'selector'      => "{$selector} .h-image__frame",
@@ -347,7 +341,7 @@ class Image extends ComponentBase {
 				),
 
 				"{$prefix}props.showFrameOverImage" => array(
-					'default'    => (int)Defaults::get( "{$prefix}props.showFrameOverImage" ),
+					'default'    => Defaults::get( "{$prefix}props.showFrameOverImage" ),
 					'control'    => array(
 						'label'       => Translations::get( 'frame_over_image' ),
 						'type'        => 'switch',
@@ -367,7 +361,7 @@ class Image extends ComponentBase {
 				),
 
 				"{$prefix}props.showFrameShadow" => array(
-					'default'   => (int)Defaults::get( "{$prefix}props.showFrameShadow" ),
+					'default'   => Defaults::get( "{$prefix}props.showFrameShadow" ),
 					'control'   => array(
 						'label'       => Translations::get( 'frame_shadow' ),
 						'type'        => 'switch',
@@ -385,9 +379,8 @@ class Image extends ComponentBase {
 				),
 
 				"{$prefix}props.enabledFrameOption" => array(
-					'default'    => Defaults::get( "{$prefix}props.enabledFrameOption" ),
-					'transport'  => 'postMessage',
-					'control'    => array(
+					'default'   => Defaults::get( "{$prefix}props.enabledFrameOption" ),
+					'control'   => array(
 						'label'       => Translations::get( 'frame_options' ),
 						'input_type'  => 'switch',
 						'type'        => 'group',
@@ -406,13 +399,8 @@ class Image extends ComponentBase {
 						),
 						'colibri_tab' => 'content',
 					),
+
 					'css_output' => array(
-						array(
-							'selector' => "{$selector} .h-image__frame",
-							'media'    => CSSOutput::NO_MEDIA,
-							'property' => 'transform-origin',
-							'value_pattern'    => 'center center 0px',
-						),
 						array(
 							'selector'    => "{$selector} .h-image__frame",
 							'media'       => CSSOutput::NO_MEDIA,
@@ -427,6 +415,15 @@ class Image extends ComponentBase {
 		);
 	}
 
+	public function renderContent() {
+
+		//if ( $this->mod( static::$settings_prefix . 'show' ) ) {
+		View::partial( 'front-header', 'image', array(
+			"component" => $this,
+		) );
+		//}
+	}
+
 	public function printImage( $classes, $placeholder ) {
 		$prefix = static::$settings_prefix;
 		$image  = $this->mod( "{$prefix}localProps.url" );
@@ -434,13 +431,13 @@ class Image extends ComponentBase {
 			$image = $placeholder;
 		}
 		?>
-        <img src="<?php echo $image; ?>" alt="" class="<?php echo $classes; ?>">
+        <img src="<?php echo esc_attr( $image ); ?>" alt="" class="<?php echo esc_attr( $classes ); ?>" />
 		<?php
 	}
 
 
 	public function printFrameClasses() {
-		$prefix = static::$settings_prefix;
+		$prefix  = static::$settings_prefix;
 		$classes = array();
 
 		if ( $this->mod( "{$prefix}props.showFrameShadow", false ) ) {
@@ -448,5 +445,9 @@ class Image extends ComponentBase {
 		}
 
 		echo esc_attr( implode( " ", $classes ) );
+	}
+
+	public function getPenPosition() {
+		return static::PEN_ON_RIGHT;
 	}
 }

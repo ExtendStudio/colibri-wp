@@ -7,25 +7,27 @@ namespace ColibriWP\Theme\Customizer;
 use ColibriWP\Theme\ActiveCallback;
 use ColibriWP\Theme\Core\Hooks;
 use ColibriWP\Theme\Core\PartialComponentInterface;
+use ColibriWP\Theme\Core\Utils;
 use ColibriWP\Theme\Customizer\Controls\AlignButtonGroupControl;
-use ColibriWP\Theme\Customizer\Controls\ButtonGroupControl;
 use ColibriWP\Theme\Customizer\Controls\ButtonControl;
+use ColibriWP\Theme\Customizer\Controls\ButtonGroupControl;
 use ColibriWP\Theme\Customizer\Controls\ColibriControl;
 use ColibriWP\Theme\Customizer\Controls\ColorControl;
+use ColibriWP\Theme\Customizer\Controls\ComposedControl;
 use ColibriWP\Theme\Customizer\Controls\ControlsGroupControl;
 use ColibriWP\Theme\Customizer\Controls\CroppedImageControl;
 use ColibriWP\Theme\Customizer\Controls\GradientControl;
 use ColibriWP\Theme\Customizer\Controls\IconControl;
 use ColibriWP\Theme\Customizer\Controls\ImageControl;
 use ColibriWP\Theme\Customizer\Controls\InputControl;
-use ColibriWP\Theme\Customizer\Controls\PluginMessageControl;
-use ColibriWP\Theme\Customizer\Controls\SeparatorControl;
-use ColibriWP\Theme\Customizer\Controls\MediaControl;
-use ColibriWP\Theme\Customizer\Controls\RepeaterControl;
-use ColibriWP\Theme\Customizer\Controls\ComposedControl;
-use ColibriWP\Theme\Customizer\Controls\SelectControl;
 use ColibriWP\Theme\Customizer\Controls\LinkedSelectControl;
+use ColibriWP\Theme\Customizer\Controls\MediaControl;
+use ColibriWP\Theme\Customizer\Controls\PenControl;
+use ColibriWP\Theme\Customizer\Controls\PluginMessageControl;
+use ColibriWP\Theme\Customizer\Controls\RepeaterControl;
+use ColibriWP\Theme\Customizer\Controls\SelectControl;
 use ColibriWP\Theme\Customizer\Controls\SelectIconControl;
+use ColibriWP\Theme\Customizer\Controls\SeparatorControl;
 use ColibriWP\Theme\Customizer\Controls\SliderControl;
 use ColibriWP\Theme\Customizer\Controls\SpacingControl;
 use ColibriWP\Theme\Customizer\Controls\SwitchControl;
@@ -62,69 +64,21 @@ class ControlFactory {
 			'group'              => ControlsGroupControl::class,
 			'spacing'            => SpacingControl::class,
 			'icon'               => IconControl::class,
+			'pen'                => PenControl::class,
 		);
+
+	private static $decoration_controls = [ 'separator', 'plugin-message' ];
 
 	private static $wp_controls = array();
 
 
-	private static $partial_refreshes   = array();
+	private static $partial_refreshes = array();
 	private static $css_output_controls = array();
 	private static $js_output_controls = array();
-	private static $active_rules        = array();
+	private static $active_rules = array();
 
 
 	private static $registered = false;
-
-	private static function preparePartialRefreshControl( $setting_id, $data ) {
-		global $wp_customize;
-
-		if ( ! isset( $wp_customize->selective_refresh ) ) {
-
-			$wp_customize->get_setting( $setting_id )->transport = 'refresh';
-			if ( array_key_exists( 'colibri_selective_refresh_selector', $data ) ) {
-				unset( $data['colibri_selective_refresh_selector'] );
-			}
-
-			if ( array_key_exists( 'colibri_selective_refresh_class', $data ) ) {
-				unset( $data['colibri_selective_refresh_class'] );
-			}
-
-		} else {
-			$wp_customize->get_setting( $setting_id )->transport = 'postMessage';
-
-			$colibri_selective_refresh_selector = (isset($data['colibri_selective_refresh_selector'])) ? $data['colibri_selective_refresh_selector'] : '';
-			$id = preg_replace( "/[^a-z\d]/i", "", $colibri_selective_refresh_selector );
-
-			if ( isset( static::$partial_refreshes[ $id ] ) ) {
-				static::$partial_refreshes[ $id ]['settings'][] = $setting_id;
-			} else {
-				static::$partial_refreshes[ $id ] = array(
-					'selector'            => $colibri_selective_refresh_selector,
-					'settings'            => array( $setting_id ),
-					'container_inclusive' => true,
-					'render_callback'     => function () use ( $data ) {
-						$class = $colibri_selective_refresh_selector;
-
-						/** @var PartialComponentInterface $item */
-						$item = new $class();
-
-						if ( isset( $colibri_selective_refresh_selector ) ) {
-							$fn = $colibri_selective_refresh_selector;
-							if ( is_string( $fn ) && ! function_exists( $fn ) ) {
-								$fn = array( $item, $fn );
-							}
-							call_user_func( $fn );
-						} else {
-							$item->renderContent();
-						}
-
-					},
-				);
-			}
-		}
-
-		return $data;
-	}
 
 	/**
 	 * @return array
@@ -135,47 +89,6 @@ class ControlFactory {
 
 	public static function getJsOutputControls() {
 		return self::$js_output_controls;
-	}
-
-	private static function prepareCSSOutputControl( $setting_id, $data ) {
-		global $wp_customize;
-
-		$setting = $wp_customize->get_setting( $setting_id );
-		if ( ! $setting ) {
-			return array();
-		}
-
-		$setting->transport = 'postMessage';
-
-		static::$css_output_controls[ $setting_id ] = $data['css_output'];
-
-		return $data;
-	}
-
-
-	private static function prepareJSOutputControl( $setting_id, $data ) {
-		global $wp_customize;
-
-		$setting = $wp_customize->get_setting( $setting_id );
-		if ( ! $setting ) {
-			return array();
-		}
-
-		$setting->transport = 'postMessage';
-		static::$js_output_controls[ $setting_id ] = $data['js_output'];
-
-		return $data;
-	}
-
-	private static function addActiveCallbackRules( $setting_id, $data ) {
-		$rules = $data['active_rules'];
-
-		$active_callback = new ActiveCallback();
-		$active_callback->setRules( $rules );
-
-		static::$active_rules[ $setting_id ] = $rules;
-
-		Hooks::colibri_add_filter( "control_{$setting_id}_active", array( $active_callback, 'applyRules' ), 10 );
 	}
 
 	public static function make( $setting_id, $data ) {
@@ -207,31 +120,63 @@ class ControlFactory {
 			$data['capability'] = 'edit_theme_options';
 		}
 
+		if ( isset( $data['focus_alias'] ) ) {
+			Hooks::colibri_add_filter( 'customizer_autofocus_aliases',
+				function ( $aliases ) use ( $data, $setting_id ) {
+					$aliases[ $data['focus_alias'] ] = $setting_id;
+					return $aliases;
+				} );
+		}
+
 		$class = static::getClassByType( $data['type'] );
 
 		global $wp_customize;
 
+		if ( ! in_array( $data['type'], static::$decoration_controls ) ) {
+			if ( $data['transport'] === 'colibri_selective_refresh' ) {
+				$data = static::preparePartialRefreshControl( $setting_id, $data );
+			}
 
-		if ( $data['transport'] === 'colibri_selective_refresh' ) {
-			$data = static::preparePartialRefreshControl( $setting_id, $data );
-		}
+			if ( $data['transport'] === 'css_output' ) {
+				$data = static::prepareCSSOutputControl( $setting_id, $data );
+			}
 
-		if ( $data['transport'] === 'css_output' ) {
-			$data = static::prepareCSSOutputControl( $setting_id, $data );
-		}
-
-		if ( $data['transport'] === 'js_output' ) {
-			$data = static::prepareJSOutputControl( $setting_id, $data );
+			if ( $data['transport'] === 'js_output' ) {
+				$data = static::prepareJSOutputControl( $setting_id, $data );
+			}
 		}
 
 		if ( $class !== ColibriControl::class ) {
 			unset( $data['type'] );
 		}
-		$control = new $class( $wp_customize, $setting_id, $data );
+
+		$control = new $class( $wp_customize, Utils::slugify( $setting_id ), $data );
 		$wp_customize->add_control( $control );
 
 
 		return $control;
+	}
+
+	private static function addActiveCallbackRules( $setting_id, $data ) {
+		$rules = $data['active_rules'];
+
+		$active_callback = new ActiveCallback();
+		$active_callback->setRules( $rules );
+
+		static::$active_rules[ $setting_id ] = $rules;
+
+		Hooks::colibri_add_filter( "control_{$setting_id}_active", array( $active_callback, 'applyRules' ), 10 );
+	}
+
+	private static function getClassByType( $type ) {
+
+		static::register();
+
+		$controls = array_merge( static::$wp_controls, static::$controls );
+
+		$class = isset( $controls [ $type ] ) ? $controls [ $type ] : ColibriControl::class;
+
+		return $class;
 	}
 
 	private static function register() {
@@ -247,15 +192,84 @@ class ControlFactory {
 		}
 	}
 
-	private static function getClassByType( $type ) {
+	private static function preparePartialRefreshControl( $setting_id, $data ) {
+		global $wp_customize;
 
-		static::register();
+		if ( ! isset( $wp_customize->selective_refresh ) ) {
 
-		$controls = array_merge( static::$wp_controls, static::$controls );
+			$wp_customize->get_setting( $setting_id )->transport = 'refresh';
+			if ( array_key_exists( 'colibri_selective_refresh_selector', $data ) ) {
+				unset( $data['colibri_selective_refresh_selector'] );
+			}
 
-		$class = isset( $controls [ $type ] ) ? $controls [ $type ] : ColibriControl::class;
+			if ( array_key_exists( 'colibri_selective_refresh_class', $data ) ) {
+				unset( $data['colibri_selective_refresh_class'] );
+			}
 
-		return $class;
+		} else {
+			$wp_customize->get_setting( $setting_id )->transport = 'postMessage';
+
+			$selector = ( isset( $data['colibri_selective_refresh_selector'] ) ) ? $data['colibri_selective_refresh_selector'] : '';
+			$id       = Utils::slugify( $selector );
+
+			if ( isset( static::$partial_refreshes[ $id ] ) ) {
+				static::$partial_refreshes[ $id ]['settings'][] = $setting_id;
+			} else {
+				static::$partial_refreshes[ $id ] = array(
+					'selector'            => $selector,
+					'settings'            => array( $setting_id ),
+					'container_inclusive' => true, //$data['selective_refresh_container_inclusive'],
+					'render_callback'     => function () use ( $data ) {
+						$class = $data['colibri_selective_refresh_class'];
+
+						/** @var PartialComponentInterface $item */
+						$item = new $class();
+
+						if ( isset( $data['colibri_selective_refresh_function'] ) ) {
+							$fn = $data['colibri_selective_refresh_function'];
+							if ( is_string( $fn ) && ! function_exists( $fn ) ) {
+								$fn = array( $item, $fn );
+							}
+							call_user_func( $fn );
+						} else {
+							$item->renderContent();
+						}
+
+					},
+				);
+			}
+		}
+
+		return $data;
+	}
+
+	private static function prepareCSSOutputControl( $setting_id, $data ) {
+		global $wp_customize;
+
+		$setting = $wp_customize->get_setting( $setting_id );
+		if ( ! $setting ) {
+			return array();
+		}
+
+		$setting->transport = 'postMessage';
+
+		static::$css_output_controls[ $setting_id ] = $data['css_output'];
+
+		return $data;
+	}
+
+	private static function prepareJSOutputControl( $setting_id, $data ) {
+		global $wp_customize;
+
+		$setting = $wp_customize->get_setting( $setting_id );
+		if ( ! $setting ) {
+			return array();
+		}
+
+		$setting->transport                        = 'postMessage';
+		static::$js_output_controls[ $setting_id ] = $data['js_output'];
+
+		return $data;
 	}
 
 	/**

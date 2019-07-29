@@ -14,7 +14,7 @@ namespace ColibriWP\Theme\Core;
  */
 class Hooks {
 
-	const HOOK_PREFIX = "colibri_theme_";
+	const HOOK_PREFIX = "colibriwp_theme_";
 
 	public static function add_action( $tag, $function_to_add, $priority = 10, $accepted_args = 1 ) {
 		\add_action( $tag, $function_to_add, $priority, $accepted_args );

@@ -55,6 +55,10 @@ class Tree {
 		$path_parts = explode( Tree::SEPARATOR, $path );
 		$result     = $this->data;
 
+		if ( $path === '' ) {
+			return $result;
+		}
+
 		while ( $path_parts ) {
 			$part = array_shift( $path_parts );
 

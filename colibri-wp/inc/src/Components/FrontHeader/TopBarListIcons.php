@@ -11,37 +11,6 @@ class TopBarListIcons extends ComponentBase {
 
 	protected static $settings_prefix = "header_front_page.icon_list.";
 
-	public static function selectiveRefreshSelector() {
-		return Defaults::get( static::$settings_prefix . 'selective_selector', false );
-	}
-
-	public function renderContent() {
-		View::partial( 'front-header', 'top-bar/list-icons', array(
-			"component" => $this,
-		) );
-	}
-
-	public function printIcons() {
-		$icons = $this->mod( static::$settings_prefix . 'localProps.iconList', array() );
-		if ($icons) {
-			$count = count($icons);
-			$i = 0;
-			foreach ( $icons as $icon ) {
-				if ($i == 0) {
-					$name = 'first';
-				} else if ($i == $count - 1) {
-					$name = 'last';
-				} else
-				{
-					$name = 'middle';
-				}
-				$i++;
-				View::partial( 'front-header', "top-bar/list-icon-$name", $icon );
-			}
-		}
-	}
-
-
 	/**
 	 * @return array();
 	 */
@@ -51,7 +20,7 @@ class TopBarListIcons extends ComponentBase {
 		return array(
 			"sections" => array(
 				"{$prefix}section" => array(
-					'title'  => Translations::get( 'icons' ),
+					'title'  => Translations::get( 'information_fields' ),
 					'panel'  => 'header_panel',
 					'type'   => 'colibri_section',
 					'hidden' => true
@@ -59,6 +28,14 @@ class TopBarListIcons extends ComponentBase {
 			),
 
 			"settings" => array(
+
+				"{$prefix}pen" => array(
+					'control' => array(
+						'type'    => 'pen',
+						'section' => "{$prefix}section",
+					),
+
+				),
 
 				"{$prefix}localProps.iconList" => array(
 					'default' => Defaults::get( "{$prefix}localProps.iconList" ),
@@ -80,7 +57,7 @@ class TopBarListIcons extends ComponentBase {
 							'icon' => array(
 								'type'    => 'icon',
 								'label'   => Translations::get( 'icon' ),
-								'default' =>Defaults::get('icons.facebook'),
+								'default' => Defaults::get( 'icons.facebook' ),
 							),
 
 							'link_value' => array(
@@ -94,5 +71,52 @@ class TopBarListIcons extends ComponentBase {
 				),
 			),
 		);
+	}
+
+	public function getPenPosition() {
+		return static::PEN_ON_LEFT;
+	}
+
+	public function renderContent() {
+		/* this prevents the pen to show after adding a new item
+	    if (\is_customize_preview() ): ?>
+            <style type="text/css">
+                <?php echo static::selectiveRefreshSelector(); ?>
+                .customize-partial-edit-shortcut {
+                    left: auto !important;
+                    top: -6px !important;
+                }
+            </style>
+		<?php endif;
+        */
+		View::partial( 'front-header', 'top-bar/list-icons', array(
+			"component" => $this,
+		) );
+
+	}
+
+	public static function selectiveRefreshSelector() {
+		return Defaults::get( static::$settings_prefix . 'selective_selector', false );
+	}
+
+	public function printIcons() {
+		$icons = $this->mod( static::$settings_prefix . 'localProps.iconList', array() );
+		if ( $icons ) {
+			$count = count( $icons );
+
+			for ( $i = 0; $i < $count; $i ++ ) {
+				$icon = $icons[ $i ];
+				$name = 'middle';
+
+				if ( $i === 0 ) {
+					$name = 'first';
+				}
+				if ( $i + 1 === $count ) {
+					$name = 'last';
+				}
+				View::partial( 'front-header', "top-bar/list-icon-$name", $icon );
+			}
+
+		}
 	}
 }

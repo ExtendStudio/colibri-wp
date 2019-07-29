@@ -9,6 +9,8 @@ use ColibriWP\Theme\Translations;
 class ColibriPanel extends \WP_Customize_Panel {
 	public $type = 'colibri_panel';
 
+	public $footer_buttons = array();
+
 	protected function content_template() {
 		?>
         <li class="panel-meta customize-info accordion-section <# if ( ! data.description ) { #> cannot-expand<# } #>">
@@ -33,5 +35,13 @@ class ColibriPanel extends \WP_Customize_Panel {
             <div class="customize-control-notifications-container"></div>
         </li>
 		<?php
+	}
+
+	public function json() {
+		$json = parent::json();
+
+		$json['footer_buttons'] = $this->footer_buttons;
+
+		return $json;
 	}
 }

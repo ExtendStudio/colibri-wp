@@ -8,7 +8,7 @@ use ColibriWP\Theme\Translations;
 
 class RepeaterControl extends VueControl {
 
-	public  $type   = 'colibri-repeater';
+	public $type = 'colibri-repeater';
 	private $fields = array();
 
 
@@ -17,16 +17,16 @@ class RepeaterControl extends VueControl {
 
         <div class="colibri-fullwidth">
             <div class="colibri-fullwidth">
-                <el-collapse v-sortable="onSortEnd">
+                <el-collapse v-sortable-el-accordion="onSortEnd">
 
                     <el-collapse-item v-for="(item,index) in items" :name="index" :key="item.index">
 
                         <template slot="title">
 							<?php $this->vueEcho( "itemsLabels[index]" ); ?>
                         </template>
-                        
+
                         <ul class="field-data">
-                            <li v-for="(field,name) in fields">
+                            <li v-for="(field,name) in fields" :key="name">
                                 <label class="field-label"><?php $this->vueEcho( "field.label" ); ?></label>
                                 <div class="component-holder"
                                      :is="getComponentType(field.type)"

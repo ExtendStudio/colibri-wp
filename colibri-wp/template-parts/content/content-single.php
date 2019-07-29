@@ -41,7 +41,7 @@
 	<?php
 
 	the_post_navigation( array(
-		'next_text' => '<span class="meta-nav" aria-hidden="true">' . esc_html__( 'Next:', 'colibri-wp' )
+			'next_text' => '<span class="meta-nav" aria-hidden="true">' . esc_html__( 'Next:', 'colibri-wp' )
 		               . '</span> ' .
 		               '<span class="screen-reader-text">' . esc_html__( 'Next post:', 'colibri-wp' ) . '</span> ' .
 		               '<span class="post-title">%title</span><i class="font-icon-post fa fa-angle-double-right"></i>',

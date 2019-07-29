@@ -22,14 +22,6 @@ class Title extends FrontTitle{
 		}
 	}
 
-	public function printTitle($shortcode = '') {
-
-		if ( $this->mod( static::$settings_prefix . 'show' ) ) {
-
-			$atts = colibriwp_get_shortocode_atts( urldecode( $shortcode ) );
-			echo \colibriwp_page_title( $atts );
-		}
-	}
 
 	protected static function getOptions() {
 		$prefix = static::$settings_prefix;

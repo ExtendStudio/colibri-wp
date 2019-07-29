@@ -6,22 +6,18 @@ return array(
 	'press_enter_to_open_section' => __( 'Press return or enter to open this section', 'colibri-wp' ),
 	'back'                        => __( 'Back', 'colibri-wp' ),
 	'help'                        => __( 'Help', 'colibri-wp' ),
-	'header_sections'             => __( 'Header Sections', 'colibri-wp' ),
-	'footer_sections'             => __( 'Footer Sections', 'colibri-wp' ),
-	'content_sections'            => __( 'Content Sections', 'colibri-wp' ),
-	'general_settings'            => __( 'General Settings', 'colibri-wp' ),
+	'header_sections'             => __( 'Header', 'colibri-wp' ),
+	'footer_sections'             => __( 'Footer', 'colibri-wp' ),
+	'content_sections'            => __( 'Content', 'colibri-wp' ),
+	'content_settings'            => __( 'Content Settings', 'colibri-wp' ),
 	'top_bar_settings'            => __( 'Top Bar Settings', 'colibri-wp' ),
 	'nav_settings'                => __( 'Navigation Settings', 'colibri-wp' ),
 	'hero_settings'               => __( 'Hero Settings', 'colibri-wp' ),
 	'footer_settings'             => __( 'Footer Settings', 'colibri-wp' ),
-	'content_settings'            => __( 'Content Settings', 'colibri-wp' ),
+	'blog_settings'               => __( 'Blog Settings', 'colibri-wp' ),
 	'content'                     => __( 'Content', 'colibri-wp' ),
 	'style'                       => __( 'Style', 'colibri-wp' ),
 	'advanced'                    => __( 'Advanced', 'colibri-wp' ),
-
-	// top_bar_background
-	'enable_top_bar'              => __( 'Enable top bar', 'colibri-wp' ),
-	'top_bar_background'          => __( 'Background Color', 'colibri-wp' ),
 
 	//hero
 	'background_type'             => __( 'Background Type', 'colibri-wp' ),
@@ -112,7 +108,6 @@ return array(
 	'circles_3'                   => __( 'Circles 3', 'colibri-wp' ),
 	'circles_gradient'            => __( 'Circles Gradient', 'colibri-wp' ),
 	'circles_white_gradient'      => __( 'Circles White Gradient', 'colibri-wp' ),
-	'waves'                       => __( 'Waves', 'colibri-wp' ),
 	'waves_inverted'              => __( 'Waves Inverted', 'colibri-wp' ),
 	'dots'                        => __( 'Dots', 'colibri-wp' ),
 	'left_tilted_lines'           => __( 'Left Tilted Lines', 'colibri-wp' ),
@@ -126,20 +121,11 @@ return array(
 	'text_only'                   => __( 'Text only', 'colibri-wp' ),
 	'text_with_media_on_right'    => __( 'Text with media on right', 'colibri-wp' ),
 	'text_with_media_on_left'     => __( 'Text with media on left', 'colibri-wp' ),
-	'text_with_media_above'       => __( 'Text with media above', 'colibri-wp' ),
-	'text_with_media_below'       => __( 'Text with media below', 'colibri-wp' ),
 	'show_title'                  => __( 'Show Title', 'colibri-wp' ),
 	'show_subtitle'               => __( 'Show Subtitle', 'colibri-wp' ),
-	'show_buttons'                => __( 'Show Buttons', 'colibri-wp' ),
 	'title'                       => __( 'Title', 'colibri-wp' ),
 	'subtitle'                    => __( 'Subtitle', 'colibri-wp' ),
-	'media_type'                  => __( 'Media Type', 'colibri-wp' ),
-	'media_settings'              => __( 'Media Settings', 'colibri-wp' ),
-	'text_settings'               => __( 'Text Settings', 'colibri-wp' ),
 	'text_width'                  => __( 'Text width', 'colibri-wp' ),
-	'left'                        => __( 'Left', 'colibri-wp' ),
-	'center'                      => __( 'Center', 'colibri-wp' ),
-	'right'                       => __( 'Right', 'colibri-wp' ),
 	'button'                      => __( 'Button', 'colibri-wp' ),
 	'add_button'                  => __( 'Add Button', 'colibri-wp' ),
 	'buttons'                     => __( 'Buttons', 'colibri-wp' ),
@@ -150,9 +136,8 @@ return array(
 	'link'                        => __( 'Link', 'colibri-wp' ),
 	'icons'                       => __( 'Icons', 'colibri-wp' ),
 	'align'                       => __( 'Align', 'colibri-wp' ),
-	'spacing'                     => __( 'Spacing', 'colibri-wp' ),
-	'top'                         => __( 'Top', 'colibri-wp' ),
-	'bottom'                      => __( 'Bottom', 'colibri-wp' ),
+	'spacing_top'                 => __( 'Spacing top', 'colibri-wp' ),
+	'spacing_bottom'              => __( 'Spacing bottom', 'colibri-wp' ),
 	'full_height'                 => __( 'Full Height', 'colibri-wp' ),
 	'hero_column_width'           => __( 'Text column width', 'colibri-wp' ),
 
@@ -162,7 +147,6 @@ return array(
 	'vertical'                    => __( 'Vertical', 'colibri-wp' ),
 	'spread'                      => __( 'Spread', 'colibri-wp' ),
 	'blur'                        => __( 'Blur', 'colibri-wp' ),
-	'box_shadow'                  => __( 'Box shadow', 'colibri-wp' ),
 	'frame_options'               => __( 'Frame options', 'colibri-wp' ),
 	'type'                        => __( 'Type', 'colibri-wp' ),
 	'border'                      => __( 'Border', 'colibri-wp' ),
@@ -170,17 +154,13 @@ return array(
 	'height'                      => __( 'Height', 'colibri-wp' ),
 	'offset'                      => __( 'Offset', 'colibri-wp' ),
 	'offset_left'                 => __( 'Offset left', 'colibri-wp' ),
-	'offset_right'                => __( 'Offset right', 'colibri-wp' ),
 	'offset_top'                  => __( 'Offset top', 'colibri-wp' ),
 	'frame_thickness'             => __( 'Frame thickness', 'colibri-wp' ),
 	'frame_over_image'            => __( 'Show frame over image', 'colibri-wp' ),
 	'frame_shadow'                => __( 'Show frame shadow', 'colibri-wp' ),
 
 	//top bar
-	"show_left_area"              => __( "Show left area", 'colibri-wp' ),
-	"show_right_area"             => __( "Show right area", 'colibri-wp' ),
 	"information_fields"          => __( "Information Fields", 'colibri-wp' ),
-	"information"                 => __( "Information", 'colibri-wp' ),
 	"social_icons"                => __( "Social Icons", 'colibri-wp' ),
 	"content_type"                => __( "Content Type", 'colibri-wp' ),
 	"field_n"                     => __( "Field %s", 'colibri-wp' ),
@@ -193,36 +173,30 @@ return array(
 
 	// nav bar
 	"stick_to_top"                => __( "Stick on scroll", 'colibri-wp' ),
-	"sticky_layout_type"          => __( "Sticky layout type", 'colibri-wp' ),
 	"show_top_bar"                => __( "Show top bar", 'colibri-wp' ),
-	"boxed_navigation"            => __( "Boxed Navigation", 'colibri-wp' ),
 	"boxed"                       => __( "Boxed", 'colibri-wp' ),
 	"container_width"             => __( "Container width", 'colibri-wp' ),
 	"full_width"                  => __( "Full width", 'colibri-wp' ),
-	"transparent"                 => __( "Transparent", 'colibri-wp' ),
-	"overlap"                     => __( "Overlap header", 'colibri-wp' ),
+	"transparent_nav"             => __( "Transparent nav", 'colibri-wp' ),
 	"button_align"                => __( "Button align", 'colibri-wp' ),
 
 	//logo
 	"layout_type"                 => __( "Layout type", 'colibri-wp' ),
-	"logo_left_nav_right"         => __( "Logo on left / Nav on right", 'colibri-wp' ),
-	"logo_above_menu"             => __( "Logo above menu", 'colibri-wp' ),
 	"alternate_logo_image"        => __( "Alternate logo image", 'colibri-wp' ),
 	"navigation_padding"          => __( "Navigation padding", 'colibri-wp' ),
 	'logo'                        => __( 'Logo', 'colibri-wp' ),
 
-	'logo_image_only'        => __( 'Logo image only' ),
-	'site_title_text_only'   => __( 'Site title text only' ),
-	'image_with_text_below'  => __( 'Image with text below' ),
-	'image_with_text_right'  => __( 'Image with text on the right' ),
-	'image_with_text_above'  => __( 'Image with text above' ),
-	'image_with_text_left'   => __( 'Image with text on the left' ),
+	'logo_image_only'        => __( 'Logo image only', 'colibri-wp' ),
+	'site_title_text_only'   => __( 'Site title text only', 'colibri-wp' ),
+	'image_with_text_below'  => __( 'Image with text below', 'colibri-wp' ),
+	'image_with_text_right'  => __( 'Image with text on the right', 'colibri-wp' ),
+	'image_with_text_above'  => __( 'Image with text above', 'colibri-wp' ),
+	'image_with_text_left'   => __( 'Image with text on the left', 'colibri-wp' ),
 
 	// menu
 	'menu'                   => __( 'Menu', 'colibri-wp' ),
 	'no_menu'                => __( '- No menu -', 'colibri-wp' ),
 	'edit_menu_structure'    => __( 'Edit Menu Structure', 'colibri-wp' ),
-	'create_menu'            => __( 'Create Menu', 'colibri-wp' ),
 	'show_offscreen_menu_on' => __( 'Show offscreen menu on', 'colibri-wp' ),
 	'mobile'                 => __( 'Mobile', 'colibri-wp' ),
 	'mobile_tablet'          => __( 'Mobile and tablet', 'colibri-wp' ),
@@ -252,32 +226,82 @@ return array(
 	'shutter_out_vertical'   => __( 'Shutter out vertical', 'colibri-wp' ),
 
 	//navbar
-
-	'logo_nav'                           => __( 'Logo / Nav', 'colibri-wp' ),//logo /nav
-	'logo_above'                         => __( 'Logo above', 'colibri-wp' ),//logo above
-	'logo_nav_cta'                       => __( 'Logo / nav / cta', 'colibri-wp' ),//logo above
-	'nav_logo_cta'                       => __( 'Nav / logo / cta', 'colibri-wp' ),//logo above
-	'nav_below_logo_cta'                 => __( 'Nav below / logo / cta', 'colibri-wp' ),//logo above
+	'logo_nav'               => __( 'Logo / Nav', 'colibri-wp' ),//logo /nav
+	'logo_above'             => __( 'Logo above', 'colibri-wp' ),//logo above
 
 	// frontend
-	"read_more"                          => __( 'Read More', 'colibri-wp' ),
+
+	"read_more" => __( 'Read More', 'colibri-wp' ),
 
 	//footer
-	"footer_parallax"                    => __( 'Use footer parallax', 'colibri-wp' ),
+
+	"footer_parallax" => __( 'Use footer parallax', 'colibri-wp' ),
 
 	//plugin
-	"plugin_message"                     => __( 'To enable all the theme features, please install the companion plugin', 'colibri-wp' ),
-	"plugin_message_btn"                 => __( 'Install companion plugin', 'colibri-wp' ),
+
+	"plugin_message"            => __( 'To enable all the theme features, please install %s plugin',
+		'colibri-wp' ),
+	"install_with_placeholder"  => __( 'Install %s', 'colibri-wp' ),
+	"activate_with_placeholder" => __( 'Activate %s', 'colibri-wp' ),
 
 	//blog
-	"posts_per_row"                      => __( 'Posts per row', 'colibri-wp' ),
-	"show_blog_sidebar"                  => __( 'Show blog sidebar ', 'colibri-wp' ),
-	"post_highlight"                     => __( 'Post highlight', 'colibri-wp' ),
-	"show_post_title_in_post_page"       => __( 'Show post title in post page', 'colibri-wp' ),
-	"show_post_meta"                     => __( 'Show post meta', 'colibri-wp' ),
-	"enable_masonry"                     => __( 'Enable masonry', 'colibri-wp' ),
-	"show_thumbnail_placeholder"         => __( 'Show thumbnail placeholder', 'colibri-wp' ),
-	"thumbnail_placeholder_color"        => __( 'Thumbnail placeholder color', 'colibri-wp' ),
-	"blog_show_post_featured_image"      => __( 'Use post featured image as hero background when available', 'colibri-wp' ),
-	"blog_show_post_featured_image_desc" => __( 'The inner pages hero background should be set to image', 'colibri-wp' ),
+
+	"posts_per_row"                           => __( 'Posts per row', 'colibri-wp' ),
+	"show_blog_sidebar"                       => __( 'Show blog sidebar ', 'colibri-wp' ),
+	"enable_masonry"                          => __( 'Enable masonry', 'colibri-wp' ),
+	"show_thumbnail_placeholder"              => __( 'Show thumbnail placeholder', 'colibri-wp' ),
+	"thumbnail_placeholder_color"             => __( 'Thumbnail placeholder color', 'colibri-wp' ),
+
+	// admin
+	"theme_page_name"                         => __( 'ColibriWP Info', 'colibri-wp' ),
+	"or"                                      => __( 'or', 'colibri-wp' ),
+	"get_started"                             => __( 'Get Started', 'colibri-wp' ),
+	"get_started_section_1_title"             => __( 'Recommended plugins', 'colibri-wp' ),
+	"get_started_section_2_title"             => __( 'Links to Customizer Settings', 'colibri-wp' ),
+	"get_started_set_logo"                    => __( 'Set your logo', 'colibri-wp' ),
+	"get_started_change_hero_image"           => __( 'Change the hero image', 'colibri-wp' ),
+	"get_started_change_customize_navigation" => __( 'Customize navigation', 'colibri-wp' ),
+	"get_started_change_customize_hero"       => __( 'Customize frontpage hero', 'colibri-wp' ),
+	"get_started_customize_footer"            => __( 'Customize footer', 'colibri-wp' ),
+	"get_started_change_color_settings"       => __( 'Change color settings', 'colibri-wp' ),
+	"get_started_customize_fonts"             => __( 'Customize fonts', 'colibri-wp' ),
+	"get_started_set_menu_links"              => __( 'Customize menu', 'colibri-wp' ),
+	"customize"                               => __( 'Customize', 'colibri-wp' ),
+	"welcome_message"                         => __( 'Welcome to %s', 'colibri-wp' ),
+	"start_with_a_front_page"                 => __( 'Choose one of the Colibri predefined designs', 'colibri-wp' ),
+	"start_with_selected_page"                => __( 'Start with selected design', 'colibri-wp' ),
+	"check_all_demo_sites_page"               => __( 'Check all demo sites page', 'colibri-wp' ),
+	"admin_sidebar_documentation_title"       => __( 'Documentation', 'colibri-wp' ),
+	"admin_sidebar_documentation_description" => __( 'Colibri is easy to learn and master, but you can always check out our documentation to check out features you might have missed.',
+		'colibri-wp' ),
+	"admin_sidebar_documentation_action"      => __( 'Check documentation', 'colibri-wp' ),
+	"admin_sidebar_support_title"             => __( 'Support', 'colibri-wp' ),
+	"admin_sidebar_support_description"       => __( 'Our technical team is here to help you build an awesome website. We usually answer support issues in less than 1 business day.',
+		'colibri-wp' ),
+	"admin_sidebar_support_action"            => __( 'Open a support ticket', 'colibri-wp' ),
+	"admin_sidebar_review_title"              => __( 'Leave a Review', 'colibri-wp' ),
+	"admin_sidebar_review_description"        => __( 'We strive to provide our customers with the best service in our industry, so your feedback is very important to us. We would greatly appreciate it if you would take a few minutes to share your experience with us via this survey.',
+		'colibri-wp' ),
+	"admin_sidebar_review_action"             => __( 'Leave a review', 'colibri-wp' ),
+	"contact_form_plugin_description"         => sprintf(
+		__( '%s plugin is recommended for the %s contact section.', 'colibri-wp' ),
+		'Contact Form 7',
+		'Colibri Page Builder'
+	),
+	"page_builder_plugin_description"         => sprintf(
+		__( '%s plugin adds drag and drop functionality and many other features to the %s theme.', 'colibri-wp' ),
+		'Colibri Page Builder',
+		'ColibriWP'
+	),
+	'activate'                                => __( 'Activate', 'colibri-wp' ),
+	'install'                                 => __( 'Install', 'colibri-wp' ),
+	'installing'                              => __( 'Installing %s', 'colibri-wp' ),
+	'activating'                              => __( 'Activating %s', 'colibri-wp' ),
+	'plugin_installed_and_active'             => __( 'Active', 'colibri-wp' ),
+	'skip_to_content'                         => __( 'Skip to content', 'colibri-wp' ),
+	'change_header_design'                    => __( 'Choose header design', 'colibri-wp' ),
+	'change_footer_design'                    => __( 'Choose footer design', 'colibri-wp' ),
+	'add_section'                             => __( 'Add Predefined Section', 'colibri-wp' ),
+	'start_with_a_front_page_plugin_info'     => __( 'This actions will also install Colibri Page Builder plugin.',
+		'colibri-wp' ),
 );

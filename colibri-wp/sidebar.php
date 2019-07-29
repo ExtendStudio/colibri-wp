@@ -1,1 +1,1 @@
-<?php colibri_theme()->get( 'sidebar' )->render(); ?>
+<?php colibriwp_theme()->get( 'sidebar' )->render(); ?>

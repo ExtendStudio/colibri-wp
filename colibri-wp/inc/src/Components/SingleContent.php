@@ -14,6 +14,10 @@ use ColibriWP\Theme\View;
 
 class SingleContent extends MainContent {
 
+	public static function selectiveRefreshSelector() {
+		return "#content";
+	}
+
 	public function renderContent() {
 
 		View::printIn( View::CONTENT_ELEMENT, function () {
@@ -27,6 +31,6 @@ class SingleContent extends MainContent {
 					Theme::getInstance()->get( 'sidebar' )->render();
 				} );
 			} );
-		}, array( array( 'post-single' ) ) );
+		}, array( array( 'post-single', 'colibri-main-content-area-single' ) ) );
 	}
 }

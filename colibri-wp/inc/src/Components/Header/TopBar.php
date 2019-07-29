@@ -3,30 +3,25 @@
 namespace ColibriWP\Theme\Components\Header;
 
 use ColibriWP\Theme\Core\ComponentBase;
-use ColibriWP\Theme\Core\Hooks;
 use ColibriWP\Theme\Defaults;
-use ColibriWP\Theme\Components\CSSOutput;
 use ColibriWP\Theme\Translations;
 use ColibriWP\Theme\View;
 
 class TopBar extends ComponentBase {
 
-	protected static $settings_prefix = "header_front_page.top_bar.";
+	protected static $settings_prefix = "header_front_page.navigation.";
 	private $attrs = array();
-
-	public static function selectiveRefreshSelector() {
-		return Defaults::get( static::$settings_prefix . 'selective_selector', false );
-	}
 
 	public function __construct( $attrs = array() ) {
 	}
 
 	protected static function getOptions() {
-		$prefix  = static:: $settings_prefix;
+		$prefix  = static::$settings_prefix;
 		$section = 'nav_bar';
 
 		return array(
 			"settings" => array(
+
 				"{$prefix}props.showTopBar" => array(
 					'default'    => Defaults::get( "{$prefix}props.showTopBar" ),
 					'control'    => array(
@@ -49,7 +44,33 @@ class TopBar extends ComponentBase {
 		);
 	}
 
+	public static function selectiveRefreshSelector() {
+		return "[data-selective-refresh='" . static::selectiveRefreshKey() . "']";
+	}
+
 	public function renderContent() {
+
+		$prefix = static::$settings_prefix;
+
+		if ( ! $this->mod( "{$prefix}props.showTopBar" ) ) {
+			if ( ! is_customize_preview() ) {
+
+				return;
+			}
+		}
+
+		if ( \is_customize_preview() ) {
+			?>
+            <div data-selective-refresh="<?php echo static::selectiveRefreshKey(); ?>">
+				<?php $this->makeView(); ?>
+            </div>
+			<?php
+		} else {
+			$this->makeView();
+		}
+	}
+
+	public function makeView() {
 		View::partial( 'front-header', 'top-bar', array(
 			"component" => $this,
 		) );

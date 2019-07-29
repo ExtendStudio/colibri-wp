@@ -2,6 +2,10 @@ function resolveColibriEditor(dir) {
     return path.join(__dirname, "/assets/colibri-editor", dir);
 }
 
+if(!global.Config){
+    global.Config = require('laravel-mix/src/config')();
+}
+
 module.exports = {
     externals: {
         "jquery": "jQuery",
@@ -11,7 +15,8 @@ module.exports = {
     resolve: {
         alias: {
             '@': resolveColibriEditor(''),
-            '@root/static':resolveColibriEditor('/../colibri-static'),
+            '@root/static': resolveColibriEditor('/../colibri-static'),
+            '@root/static-free': resolveColibriEditor('/../colibri-static-free'),
         },
     },
     module: {

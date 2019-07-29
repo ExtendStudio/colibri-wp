@@ -28,6 +28,8 @@ class AssetsManager {
 		);
 
 	private $localized = array();
+	private $base_url = "";
+	private $is_hot = false;
 
 	/**
 	 * AssetsManager constructor.
@@ -37,12 +39,28 @@ class AssetsManager {
 	public function __construct( $theme ) {
 		$this->theme = $theme;
 		$this->key   = Defaults::get( 'assets_js_key', 'THEME_DATA' );
+
+		if ( file_exists( get_template_directory() . "/resources/hot" ) ) {
+			$this->is_hot   = true;
+			$this->base_url = trim(file_get_contents( get_template_directory() . "/resources/hot" ));
+		} else {
+			$this->base_url = get_template_directory_uri() . "/resources";
+		}
+	}
+
+	public static function addInlineScriptCallback( $handle, $callback ) {
+		\wp_add_inline_script( $handle, Utils::buffer_wrap( $callback, true ) );
+	}
+
+	public static function addInlineStyleCallback( $handle, $callback ) {
+		\wp_add_inline_style( $handle, Utils::buffer_wrap( $callback, true ) );
 	}
 
 	public function boot() {
 		add_action( 'wp_footer', array( $this, 'addFrontendJSData' ), 0 );
 		add_action( 'wp_enqueue_scripts', array( $this, 'doEnqueueGoogleFonts' ), 1 );
 		add_action( 'wp_enqueue_scripts', array( $this, 'doRegisterScript' ), 10 );
+		add_action( 'admin_enqueue_scripts', array( $this, 'doRegisterScript' ), 10 );
 		add_action( 'wp_enqueue_scripts', array( $this, 'doAutoEnqueue' ), 20 );
 		add_action( 'wp_enqueue_scripts', array( $this, 'doLocalize' ), 40 );
 	}
@@ -56,9 +74,7 @@ class AssetsManager {
 		<?php
 	}
 
-
 	public function doRegisterScript() {
-
 
 		foreach ( $this->registered['style'] as $handle => $data ) {
 			wp_register_style( $handle, $data['src'], $data['deps'], $data['ver'], $data['media'] );
@@ -68,7 +84,6 @@ class AssetsManager {
 			wp_register_script( $handle, $data['src'], $data['deps'], $data['ver'], $data['in_footer'] );
 		}
 	}
-
 
 	public function doEnqueueGoogleFonts() {
 		$fontQuery = array();
@@ -87,23 +102,22 @@ class AssetsManager {
 		$this->registerStyle( $this->theme->getTextDomain() . "_google_fonts", $fontsURL );
 	}
 
-	public function doAutoEnqueue() {
+	/**
+	 * @param       $handle
+	 * @param       $url
+	 * @param array $deps
+	 * @param bool $auto_enqueue
+	 *
+	 * @return AssetsManager
+	 */
+	public function registerStyle( $handle, $url, $deps = array(), $auto_enqueue = true ) {
+		$this->register( 'style', $handle, array(
+			'src'          => $url,
+			'deps'         => $deps,
+			'auto_enqueue' => $auto_enqueue,
+		) );
 
-		foreach ( Hooks::colibri_apply_filters( 'auto_enqueue_assets', $this->autoenqueue ) as $type => $content ) {
-			foreach ( $content as $item ) {
-				$this->enqueue( $type, $item );
-			}
-		}
-
-		if (is_singular() && comments_open() && get_option('thread_comments')) {
-			wp_enqueue_script('comment-reply');
-		}
-	}
-
-	public function doLocalize() {
-		foreach ( $this->localized as $handle => $data ) {
-			\wp_localize_script( $handle, $data['key'], $data['data'] );
-		}
+		return $this;
 	}
 
 	/**
@@ -152,6 +166,18 @@ class AssetsManager {
 		return $this;
 	}
 
+	public function doAutoEnqueue() {
+
+		foreach ( Hooks::colibri_apply_filters( 'auto_enqueue_assets', $this->autoenqueue ) as $type => $content ) {
+			foreach ( $content as $item ) {
+				$this->enqueue( $type, $item );
+			}
+		}
+
+		if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
+			wp_enqueue_script( 'comment-reply' );
+		}
+	}
 
 	public function enqueue( $type, $handle, $args = array() ) {
 		if ( ! empty( $args ) ) {
@@ -173,6 +199,12 @@ class AssetsManager {
 		}
 	}
 
+	public function doLocalize() {
+		foreach ( $this->localized as $handle => $data ) {
+			\wp_localize_script( $handle, $data['key'], $data['data'] );
+		}
+	}
+
 	public function enqueueScript( $handle, $args = array() ) {
 		$this->enqueue( "script", $handle, $args );
 	}
@@ -181,12 +213,25 @@ class AssetsManager {
 		$this->enqueue( "style", $handle, $args );
 	}
 
+	/**
+	 * @param string $handle
+	 * @param string $rel
+	 * @param array $deps
+	 * @param bool $auto_enqueue
+	 *
+	 * @return AssetsManager
+	 */
+	public function registerTemplateScript( $handle, $rel, $deps = array(), $auto_enqueue = true ) {
+		$this->registerScript( $handle, $this->getBaseURL() . $rel, $deps, $auto_enqueue );
+
+		return $this;
+	}
 
 	/**
 	 * @param string $handle
 	 * @param string $rel
-	 * @param array  $deps
-	 * @param bool   $auto_enqueue
+	 * @param array $deps
+	 * @param bool $auto_enqueue
 	 *
 	 * @return AssetsManager
 	 */
@@ -201,50 +246,31 @@ class AssetsManager {
 		return $this;
 	}
 
-	/**
-	 * @param string $handle
-	 * @param string $rel
-	 * @param array  $deps
-	 * @param bool   $auto_enqueue
-	 *
-	 * @return AssetsManager
-	 */
-	public function registerTemplateScript( $handle, $rel, $deps = array(), $auto_enqueue = true ) {
-		$this->registerScript( $handle, get_template_directory_uri() . $rel, $deps, $auto_enqueue );
+	public function getBaseURL() {
+		return $this->base_url;
+	}
+
+	public function registerStylesheet( $handle, $hot_rel, $deps = array(), $auto_enqueue = true ) {
+		if ( $this->is_hot ) {
+			$this->registerTemplateStyle( $handle, "/{$hot_rel}", $deps, $auto_enqueue );
+		} else {
+			$this->registerStyle( $handle, get_stylesheet_uri(), $deps, $auto_enqueue );
+		}
 
 		return $this;
 	}
 
-
 	/**
-	 * @param       $handle
-	 * @param       $url
+	 * @param string $handle
+	 * @param string $rel
 	 * @param array $deps
-	 * @param bool  $auto_enqueue
-	 *
-	 * @return AssetsManager
-	 */
-	public function registerStyle( $handle, $url, $deps = array(), $auto_enqueue = true ) {
-		$this->register( 'style', $handle, array(
-			'src'          => $url,
-			'deps'         => $deps,
-			'auto_enqueue' => $auto_enqueue,
-		) );
-
-		return $this;
-	}
-
-	/**
-	 * @param string $handle
-	 * @param string $rel
-	 * @param array  $deps
-	 * @param bool   $auto_enqueue
+	 * @param bool $auto_enqueue
 	 *
 	 * @return AssetsManager
 	 */
 	public function registerTemplateStyle( $handle, $rel, $deps = array(), $auto_enqueue = true ) {
 
-		$this->registerStyle( $handle, get_template_directory_uri() . $rel, $deps, $auto_enqueue );
+		$this->registerStyle( $handle, $this->getBaseURL() . $rel, $deps, $auto_enqueue );
 
 		return $this;
 	}
@@ -252,7 +278,7 @@ class AssetsManager {
 	/**
 	 * @param string $handle
 	 * @param string $key
-	 * @param array  $data
+	 * @param array $data
 	 *
 	 * @return AssetsManager
 	 */
@@ -270,5 +296,4 @@ class AssetsManager {
 
 		return $this;
 	}
-
 }

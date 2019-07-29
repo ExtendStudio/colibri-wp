@@ -1,12 +1,10 @@
 <?php
 
 
-// TODO - this should be removed - not user anymore
-
 namespace ColibriWP\Theme\Components\Footer;
 
 
-use ColibriWP\Theme\Components\CSSOutput;
+use ColibriWP\Theme\AssetsManager;
 use ColibriWP\Theme\Core\ComponentBase;
 use ColibriWP\Theme\Defaults;
 use ColibriWP\Theme\Translations;
@@ -16,7 +14,6 @@ use ColibriWP\Theme\View;
 class FrontFooter extends ComponentBase {
 
 	protected static $settings_prefix = "footer_post.footer.";
-	//protected static $selector = "[data-identifier=\"front-page-footer\"]";
 	protected static $selector = ".page-footer";
 
 	protected $background_component = null;
@@ -42,10 +39,20 @@ class FrontFooter extends ComponentBase {
 			),
 
 			"settings" => array(
+
+				"{$prefix}pen" => array(
+					'control' => array(
+						'type'    => 'pen',
+						'section' => "footer",
+					),
+
+				),
+
 				"{$prefix}props.useFooterParallax" => array(
-					'default'   => (int) Defaults::get( "{$prefix}props.useFooterParallax" ),
+					'default'   => Defaults::get( "{$prefix}props.useFooterParallax" ),
 					'transport' => 'refresh',
 					'control'   => array(
+						'focus_alias' => 'footer',
 						'label'       => Translations::get( 'footer_parallax' ),
 						'type'        => 'switch',
 						'show_toggle' => true,
@@ -53,7 +60,7 @@ class FrontFooter extends ComponentBase {
 						'colibri_tab' => 'content',
 					),
 					'js_output' => array(
-    					array(
+						array(
 							'selector' => ".page-footer",
 							'action'   => "colibri-component-toggle",
 							'value'    => 'footerParallax'
@@ -65,27 +72,27 @@ class FrontFooter extends ComponentBase {
 	}
 
 	public function printParalaxJsToggle() {
-		$prefix = static::$settings_prefix;
+		$prefix   = static::$settings_prefix;
 		$parallax = $this->mod( "{$prefix}props.useFooterParallax", false );
-		if ($parallax === false || $parallax === "")
-		{
-			$disable_parallax_js = <<<JS
-			jQuery(window).load(function ()
-			{
-				var el = jQuery(".page-footer");
-			    var component = el.data()['fn.colibri.footerParallax'];
-			    if (component) {
-					    component.stop();
-			    }
-			});
-JS;
-			wp_add_inline_script( 'wp-embed', $disable_parallax_js );
+		if ( $parallax === false || $parallax === "" ) {
+			AssetsManager::addInlineScriptCallback( 'colibri-theme', function () {
+				?>
+                <script type="text/javascript">
+                    jQuery(window).load(function () {
+                        var el = jQuery(".page-footer");
+                        var component = el.data()['fn.colibri.footerParallax'];
+                        if (component) {
+                            component.stop();
+                        }
+                    });
+                </script>
+				<?php
+			} );
 		}
 
 	}
 
 	public function renderContent() {
-
 		View::partial( "front-footer", "footer", array(
 			"component" => $this,
 		) );

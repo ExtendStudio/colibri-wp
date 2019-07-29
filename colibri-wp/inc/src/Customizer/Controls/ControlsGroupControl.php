@@ -4,13 +4,24 @@
 namespace ColibriWP\Theme\Customizer\Controls;
 
 
+use WP_Customize_Manager;
+
 class ControlsGroupControl extends VueControl {
 	public $type = "colibri-controls-group";
 
 	protected $inline_content_template = true;
 
-	protected $active_color   = "#1989fa";
+	protected $active_color = "#1989fa";
 	protected $inactive_color = "#949596";
+
+	public function __construct( WP_Customize_Manager $manager, $id, array $args = array() ) {
+
+		if ( isset( $args['default'] ) ) {
+			$args['default'] = ! ! intval( $args['default'] );
+		}
+
+		parent::__construct( $manager, $id, $args );
+	}
 
 
 	public function json() {

@@ -9,139 +9,13 @@ use ColibriWP\Theme\Theme;
 
 abstract class ComponentBase implements ConfigurableInterface, PartialComponentInterface {
 
+	const PEN_ON_LEFT = "left";
+	const PEN_ON_RIGHT = "right";
 
-	/**
-	 * @param      $name
-	 * @param null $fallback
-	 *
-	 * @return mixed
-	 */
-	public function mod( $name, $fallback = null ) {
-		return static::mabyDeserializeModValue( \get_theme_mod( $name, static::settingDefault( $name, $fallback ) ) );
-	}
-
-
-	public static function mabyDeserializeModValue( $value ) {
-
-		if ( is_string( $value ) ) {
-
-			$new_value = json_decode( urldecode( $value ), true );
-
-			if ( json_last_error() === JSON_ERROR_NONE ) {
-				$value = $new_value;
-			}
-
-		}
-
-		return $value;
-	}
-
-	public function mod_e( $name ) {
-		echo $this->mod( $name );
-	}
-
-	public function mod_e_esc_attr( $name ) {
-		echo esc_attr( $this->mod( $name ) );
-	}
-
-
-	/**
-	 * @param      $name
-	 * @param null $fallback
-	 *
-	 * @return null
-	 */
-	public static function settingDefault( $name, $fallback = null ) {
-		$options = (array) static::getOptions();
-
-		$default = $fallback;
-
-		if ( isset( $options['settings'] ) && isset( $options['settings'][ $name ] ) ) {
-			if ( array_key_exists( 'default', $options['settings'][ $name ] ) ) {
-				$default = $options['settings'][ $name ]['default'];
-			}
-
-		}
-
-		return $default;
-	}
-
-
-	/**
-	 * @return array
-	 */
-	public function mods() {
-		$result   = array();
-		$settings = array_key_exists( 'settings', static::getOptions() ) ? static::getOptions()['settings'] : array();
-
-		foreach ( array( $settings ) as $key => $value ) {
-			$result[ $key ] = $this->mod( $key );
-		}
-
-		return $result;
-	}
-
-	private function addControlsFilter() {
-
-		$options = (array) static::getOptions();
-
-		if ( isset( $options['settings'] ) ) {
-			$options = array_keys( $options['settings'] );
-
-		} else {
-			$options = array();
-		}
-
-		foreach ( $options as $option ) {
-
-			Hooks::colibri_add_filter(
-				"control_{$option}_rendered",
-				function ( $value ) {
-					return true;
-				},
-				0,
-				1
-			);
-		}
-
-	}
-
-	public function render($parameters = array()) {
-
-		$that = $this;
-
-		Theme::getInstance()->getCustomizer()->inPreview(
-			function () use ( $that ) {
-				$that->addControlsFilter();
-				$that->whenCustomizerPreview();
-			}
-		);
-
-		$this->renderContent($parameters);
-	}
-
-
-	public function whenCustomizerPreview() {
-
-	}
-
-	public abstract function renderContent();
-
-	/**
-	 * @return array();
-	 */
-	/** @noinspection PhpAbstractStaticMethodInspection */
-	protected static abstract function getOptions();
-
-	public static function selectiveRefreshSelector() {
-		return false;
-	}
+	protected static $selective_refresh_container_inclusive = true;
 
 	public static function selectiveRefreshKey() {
-		$name = str_replace( "\\", "_", static::class );
-		$name = strtolower( preg_replace( '/(?<!^)[A-Z]/', '_$0', $name ) );
-
-		return $name;
+		return Utils::slugify(static::class);
 	}
 
 	public static function options() {
@@ -208,7 +82,8 @@ abstract class ComponentBase implements ConfigurableInterface, PartialComponentI
 
 						}
 
-						$options['settings'][ $id ]['control']['colibri_selective_refresh_class'] = $__class__;
+						$options['settings'][ $id ]['control']['colibri_selective_refresh_class']       = $__class__;
+						$options['settings'][ $id ]['control']['selective_refresh_container_inclusive'] = static::$selective_refresh_container_inclusive;
 					}
 
 				}
@@ -218,6 +93,157 @@ abstract class ComponentBase implements ConfigurableInterface, PartialComponentI
 		return $options;
 	}
 
+	protected static abstract function getOptions();
+
+	public static function selectiveRefreshSelector() {
+		return false;
+	}
+
+	public function mod_e( $name ) {
+		echo $this->mod( $name );
+	}
+
+	/**
+	 * @param      $name
+	 * @param null $fallback
+	 *
+	 * @return mixed
+	 */
+	public function mod( $name, $fallback = null ) {
+		return static::mabyDeserializeModValue( \get_theme_mod( $name, static::settingDefault( $name, $fallback ) ) );
+	}
+
+	public static function mabyDeserializeModValue( $value ) {
+
+		if ( is_string( $value ) ) {
+
+			$new_value = json_decode( urldecode( $value ), true );
+
+			if ( json_last_error() === JSON_ERROR_NONE ) {
+				$value = $new_value;
+			}
+
+		}
+
+		return $value;
+	}
+
+	/**
+	 * @param      $name
+	 * @param null $fallback
+	 *
+	 * @return null
+	 */
+	public static function settingDefault( $name, $fallback = null ) {
+		$options = (array) static::getOptions();
+
+		$default = $fallback;
+
+		if ( isset( $options['settings'] ) && isset( $options['settings'][ $name ] ) ) {
+			if ( array_key_exists( 'default', $options['settings'][ $name ] ) ) {
+				$default = $options['settings'][ $name ]['default'];
+			}
+
+		}
+
+		return $default;
+	}
+
+	public function mod_e_esc_attr( $name ) {
+		echo esc_attr( $this->mod( $name ) );
+	}
+
+	/**
+	 * @return array
+	 */
+	public function mods() {
+		$result   = array();
+		$settings = array_key_exists( 'settings', static::getOptions() ) ? static::getOptions()['settings'] : array();
+
+		foreach ( array( $settings ) as $key => $value ) {
+			$result[ $key ] = $this->mod( $key );
+		}
+
+		return $result;
+	}
+
+	public function render( $parameters = array() ) {
+
+		$that = $this;
+
+		Theme::getInstance()->getCustomizer()->inPreview(
+			function () use ( $that ) {
+				$that->addControlsFilter();
+				$that->whenCustomizerPreview();
+				$that->prinPenPosition();
+			}
+		);
+
+		$this->renderContent( $parameters );
+	}
+
+	/**
+	 * @return array();
+	 */
+	/** @noinspection PhpAbstractStaticMethodInspection */
+	private function addControlsFilter() {
+
+		$options = (array) static::getOptions();
+
+		if ( isset( $options['settings'] ) ) {
+			$options = array_keys( $options['settings'] );
+
+		} else {
+			$options = array();
+		}
+
+		foreach ( $options as $option ) {
+
+			Hooks::colibri_add_filter(
+				"control_{$option}_rendered",
+				function ( $value ) {
+					return true;
+				},
+				0,
+				1
+			);
+		}
+
+	}
+
+	public function whenCustomizerPreview() {
+
+
+	}
+
+	private function prinPenPosition() {
+		if ( $this->getPenPosition() === static::PEN_ON_RIGHT ) {
+			$class = static::class;
+			add_action( 'wp_footer',
+				function () use ( $class ) {
+					$selector = call_user_func( array( $class, 'selectiveRefreshSelector' ) );
+					if ( $selector ) {
+						?>
+                        <style>
+                            @media (min-width: 768px) {
+                            <?php echo $selector; ?> > .customize-partial-edit-shortcut {
+                                left: unset !important;
+                                right: -30px !important;
+                            }
+                            }
+                        </style>
+						<?php
+					}
+				}
+			);
+		}
+	}
+
+	public function getPenPosition() {
+		return static::PEN_ON_LEFT;
+	}
+
+	public abstract function renderContent();
 
 	protected function addFrontendJSData( $key, $value ) {
 		Hooks::add_filter(

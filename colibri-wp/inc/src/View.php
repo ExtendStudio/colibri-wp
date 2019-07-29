@@ -14,8 +14,8 @@ class View {
 
 	const CONTENT_ELEMENT = 'content';
 	const SECTION_ELEMENT = 'section';
-	const ROW_ELEMENT     = 'row';
-	const COLUMN_ELEMENT  = 'column';
+	const ROW_ELEMENT = 'row';
+	const COLUMN_ELEMENT = 'column';
 
 	/**
 	 * @param       $category
@@ -25,14 +25,24 @@ class View {
 
 	public static function partial( $category, $slug, $data = array() ) {
 
+		$category = Utils::camel2dashed( $category );
+		$slug     = Utils::camel2dashed( $slug );
+
+		static::make( "template-parts/{$category}/{$slug}", $data );
+
+	}
+
+	public static function make( $path, $data = array() ) {
 		global $wp_query;
 
 		$wp_query->query_vars['colibri_data'] = new Tree( $data );
 
-		$category = Utils::camel2dashed( $category );
-		$slug     = Utils::camel2dashed( $slug );
+		if ( file_exists( $path ) ) {
+			load_template( $path );
+		} else {
+			get_template_part( $path );
+		}
 
-		get_template_part( "template-parts/{$category}/{$slug}" );
 
 		$wp_query->query_vars['colibri_data'] = null;
 	}
@@ -50,23 +60,6 @@ class View {
 
 	public static function isFrontPage() {
 		return is_front_page();
-	}
-
-
-	private static function emptyMenu( $theme_location ) {
-		$theme_locations = get_nav_menu_locations();
-		$menu_id         = 0;
-
-		if ( array_key_exists( $theme_location, $theme_locations ) ) {
-			$menu_id = $theme_locations[ $theme_location ];
-		}
-
-		$menu_items = wp_get_nav_menu_items( $menu_id );
-
-		if ( $menu_items && count( $menu_items ) === 0 ) {
-			return true;
-		}
-
 	}
 
 	public static function printMenu( $attrs, $walker = "" ) {
@@ -96,6 +89,22 @@ class View {
 			},
 			'walker'          => $walker,
 		) );
+	}
+
+	private static function emptyMenu( $theme_location ) {
+		$theme_locations = get_nav_menu_locations();
+		$menu_id         = 0;
+
+		if ( array_key_exists( $theme_location, $theme_locations ) ) {
+			$menu_id = $theme_locations[ $theme_location ];
+		}
+
+		$menu_items = wp_get_nav_menu_items( $menu_id );
+
+		if ( $menu_items && count( $menu_items ) === 0 ) {
+			return true;
+		}
+
 	}
 
 	public static function menuFallback( $attrs, $walker = '' ) {
@@ -228,9 +237,9 @@ class View {
 	}
 
 	public static function printContentStart( $class = array() ) {
-		$class = array_merge( array( 'content' ), $class );
+		$class = array_merge( array( 'content position-relative' ), $class );
 		?>
-        <div class="<?php echo esc_attr( implode( " ", $class ) ); ?>">
+        <div id="content" class="<?php echo esc_attr( implode( " ", $class ) ); ?>">
 		<?php
 	}
 

@@ -9,6 +9,7 @@
 namespace ColibriWP\Theme\Components\FrontHeader;
 
 
+use ColibriWP\Theme\Components\CSSOutput;
 use ColibriWP\Theme\Core\ComponentBase;
 use ColibriWP\Theme\Defaults;
 use ColibriWP\Theme\Translations;
@@ -17,19 +18,6 @@ use ColibriWP\Theme\View;
 class Title extends ComponentBase {
 
 	protected static $settings_prefix = "header_front_page.title.";
-
-	public static function selectiveRefreshSelector() {
-		return Defaults::get( static::$settings_prefix . 'selective_selector', false );
-	}
-
-	public function renderContent() {
-
-		if ( $this->mod( static::$settings_prefix . 'show' ) ) {
-			View::partial( 'front-header', 'title', array(
-				"component" => $this,
-			) );
-		}
-	}
 
 	/**
 	 * @return array();
@@ -48,8 +36,8 @@ class Title extends ComponentBase {
 			),
 
 			"settings" => array(
-				"{$prefix}show"  => array(
-					'default'   => (int)Defaults::get( "{$prefix}show" ),
+				"{$prefix}show"               => array(
+					'default'   => Defaults::get( "{$prefix}show" ),
 					'transport' => 'refresh',
 					'control'   => array(
 						'label'       => Translations::get( 'show_title' ),
@@ -69,14 +57,57 @@ class Title extends ComponentBase {
 						'section'     => "{$prefix}section",
 						'colibri_tab' => "content",
 					),
-				)
+				),
+				"{$prefix}style.textAlign"    => array(
+					'default'    => Defaults::get( "{$prefix}style.textAlign" ),
+					'control'    => array(
+						'label'       => Translations::escHtml( "align" ),
+						'type'        => 'align-button-group',
+						'button_size' => 'medium',
+						//labels are used as values for align-button-group
+						'choices'     => array(
+							'left'   => 'left',
+							'center' => 'center',
+							'right'  => 'right',
+						),
+						'none_value'  => 'flex-start',
+						'section'     => "{$prefix}section",
+						'colibri_tab' => "content",
+					),
+					'css_output' => array(
+						array(
+							'selector' => static::selectiveRefreshSelector(),
+							'media'    => CSSOutput::NO_MEDIA,
+							'property' => 'text-align',
+						),
+					),
+				),
 			),
 		);
 	}
 
-	public function printTitle($shortcode = '') {
+	public static function selectiveRefreshSelector() {
+		return Defaults::get( static::$settings_prefix . 'selective_selector', false );
+	}
+
+	public function getPenPosition() {
+		return static::PEN_ON_RIGHT;
+	}
+
+	public function renderContent() {
+
+		if ( $this->mod( static::$settings_prefix . 'show' ) ) {
+			View::partial( 'front-header', 'title', array(
+				"component" => $this,
+			) );
+		}
+	}
+
+	public function printTitle( $shortcode = '' ) {
 
 		$prefix = static::$settings_prefix;
-		echo $this->mod( "{$prefix}localProps.content" );
+		$value  = trim( $this->mod( "{$prefix}localProps.content" ) );
+
+		echo str_replace( "\n", "<br/>", $value );
 	}
 }
