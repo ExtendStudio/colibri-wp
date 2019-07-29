@@ -2,7 +2,6 @@
 
 namespace ColibriWP\Theme\Components\FrontHeader;
 
-use ColibriWP\Theme\Components\CSSOutput;
 use ColibriWP\Theme\Core\ComponentBase;
 use ColibriWP\Theme\Defaults;
 use ColibriWP\Theme\Translations;
@@ -11,6 +10,28 @@ use ColibriWP\Theme\View;
 class ButtonsGroup extends ComponentBase {
 
 	protected static $settings_prefix = "header_front_page.button_group.";
+
+	public static function selectiveRefreshSelector() {
+		return Defaults::get( static::$settings_prefix . 'selective_selector', false );
+	}
+
+	public function renderContent() {
+
+		if ( $this->mod( static::$settings_prefix . 'show' ) ) {
+			View::partial( 'front-header', 'button_group', array(
+				"component" => $this,
+			) );
+		}
+	}
+
+	public function printButtons() {
+		$buttons = $this->mod( static::$settings_prefix . "value", array() );
+		foreach ( $buttons as $button ) {
+			$type = array_key_exists( 'button_type', $button ) ? $button['button_type'] : 0;
+			View::partial( 'front-header', "buttons/button-{$type}", $button );
+		}
+	}
+
 
 	/**
 	 * @return array();
@@ -30,7 +51,7 @@ class ButtonsGroup extends ComponentBase {
 
 			"settings" => array(
 				"{$prefix}show"  => array(
-					'default'   => (int) Defaults::get( "{$prefix}show" ),
+					'default'   => (int)Defaults::get( "{$prefix}show" ),
 					'transport' => 'refresh',
 					'control'   => array(
 						'label'       => Translations::get( 'buttons' ),
@@ -78,57 +99,7 @@ class ButtonsGroup extends ComponentBase {
 						)
 					),
 				),
-
-				"{$prefix}style.textAlign" => array(
-					'default'    => Defaults::get( "{$prefix}style.textAlign" ),
-					'control'    => array(
-						'label'       => Translations::escHtml( "align" ),
-						'type'        => 'align-button-group',
-						'button_size' => 'medium',
-						//labels are used as values for align-button-group
-						'choices'     => array(
-							'left'   => 'left',
-							'center' => 'center',
-							'right'  => 'right',
-						),
-						'none_value'  => 'flex-start',
-						'section'     => "{$prefix}section",
-						'colibri_tab' => "content",
-					),
-					'css_output' => array(
-						array(
-							'selector' => static::selectiveRefreshSelector(),
-							'media'    => CSSOutput::NO_MEDIA,
-							'property' => 'text-align',
-						),
-					),
-				),
 			),
 		);
-	}
-
-	public static function selectiveRefreshSelector() {
-		return Defaults::get( static::$settings_prefix . 'selective_selector', false );
-	}
-
-	public function getPenPosition() {
-		return static::PEN_ON_RIGHT;
-	}
-
-	public function renderContent() {
-
-		if ( $this->mod( static::$settings_prefix . 'show' ) ) {
-			View::partial( 'front-header', 'button_group', array(
-				"component" => $this,
-			) );
-		}
-	}
-
-	public function printButtons() {
-		$buttons = $this->mod( static::$settings_prefix . "value", array() );
-		foreach ( $buttons as $button ) {
-			$type = array_key_exists( 'button_type', $button ) ? $button['button_type'] : 0;
-			View::partial( 'front-header', "buttons/button-{$type}", $button );
-		}
 	}
 }

@@ -22,7 +22,7 @@ class TopBar extends ComponentBase {
 	}
 
 	protected static function getOptions() {
-		$prefix  = static::$settings_prefix;
+		$prefix  = static:: $settings_prefix;
 		$section = 'nav_bar';
 
 		return array(

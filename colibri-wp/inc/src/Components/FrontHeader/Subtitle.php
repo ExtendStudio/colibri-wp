@@ -9,7 +9,6 @@
 namespace ColibriWP\Theme\Components\FrontHeader;
 
 
-use ColibriWP\Theme\Components\CSSOutput;
 use ColibriWP\Theme\Core\ComponentBase;
 use ColibriWP\Theme\Defaults;
 use ColibriWP\Theme\Translations;
@@ -21,6 +20,14 @@ class Subtitle extends ComponentBase {
 
 	public static function selectiveRefreshSelector() {
 		return Defaults::get( 'header_front_page.subtitle.selective_selector', false );
+	}
+
+	public function renderContent() {
+		if ( $this->mod( static::$settings_prefix . 'show' ) ) {
+			View::partial( 'front-header', 'subtitle', array(
+				"component" => $this,
+			) );
+		}
 	}
 
 	/**
@@ -40,8 +47,8 @@ class Subtitle extends ComponentBase {
 			),
 
 			"settings" => array(
-				"{$prefix}show"               => array(
-					'default'   => (int) Defaults::get( "{$prefix}show" ),
+				"{$prefix}show"  => array(
+					'default'   => (int)Defaults::get( "{$prefix}show" ),
 					'transport' => 'refresh',
 					'control'   => array(
 						'label'       => Translations::get( 'show_subtitle' ),
@@ -61,46 +68,9 @@ class Subtitle extends ComponentBase {
 						'section'     => "{$prefix}section",
 						'colibri_tab' => "content",
 					),
-				),
-
-				"{$prefix}style.textAlign"    => array(
-					'default'    => Defaults::get( "{$prefix}style.textAlign" ),
-					'control'    => array(
-						'label'       => Translations::escHtml( "align" ),
-						'type'        => 'align-button-group',
-						'button_size' => 'medium',
-						//labels are used as values for align-button-group
-						'choices'     => array(
-							'left'   => 'left',
-							'center' => 'center',
-							'right'  => 'right',
-						),
-						'none_value'  => 'flex-start',
-						'section'     => "{$prefix}section",
-						'colibri_tab' => "content",
-					),
-					'css_output' => array(
-						array(
-							'selector'      => static::selectiveRefreshSelector(),
-							'media'         => CSSOutput::NO_MEDIA,
-							'property'      => 'text-align',
-						),
-					),
-				),
+				)
 			),
 		);
-	}
-
-	public function getPenPosition() {
-		return static::PEN_ON_RIGHT;
-	}
-
-	public function renderContent() {
-		if ( $this->mod( static::$settings_prefix . 'show' ) ) {
-			View::partial( 'front-header', 'subtitle', array(
-				"component" => $this,
-			) );
-		}
 	}
 
 	public function printSubtitle() {

@@ -6,7 +6,6 @@ namespace ColibriWP\Theme\Components;
 
 use ColibriWP\Theme\Core\ComponentBase;
 use ColibriWP\Theme\Core\Hooks;
-use ColibriWP\Theme\Defaults;
 use ColibriWP\Theme\Theme;
 use ColibriWP\Theme\Translations;
 use ColibriWP\Theme\View;
@@ -42,18 +41,9 @@ class Header extends ComponentBase {
 
 			"panels" => array(
 				"header_panel" => array(
-					'priority'       => 1,
-					'title'          => Translations::get( 'header_sections' ),
-					'type'           => 'colibri_panel',
-					'footer_buttons' => array(
-//						'change_header' => array(
-//							'label'         => 'Change Header',
-//							'name'          => 'colibriwp_headers_panel',
-//							'activate_when' => array(
-//								'selector' => Defaults::get( 'header_front_page.hero.selective_selector', false )
-//							)
-//						)
-					)
+					'priority' => 1,
+					'title'    => Translations::get( 'header_sections' ),
+					'type'     => 'colibri_panel',
 				),
 			),
 		);
@@ -71,29 +61,6 @@ class Header extends ComponentBase {
         <div class="header <?php echo $header_class; ?>">
 			<?php View::isFrontPage() ? $this->renderFrontPageFragment() : $this->renderInnerPageFragment(); ?>
         </div>
-        <script type='text/javascript'>
-            (function () {
-                // forEach polyfill
-                if (!NodeList.prototype.forEach) {
-                    NodeList.prototype.forEach = function (callback) {
-                        for (var i = 0; i < this.length; i++) {
-                            callback.call(this, this.item(i));
-                        }
-                    }
-                }
-
-                var navigation = document.querySelector('[data-colibri-navigation-overlap="true"], [data-colibri-component="navigation"][data-overlap="true"]')
-                if (navigation) {
-                    var els = document
-                        .querySelectorAll('.h-navigation-padding');
-                    if (els.length) {
-                        els.forEach(function (item) {
-                            item.style.paddingTop = navigation.offsetHeight + "px";
-                        });
-                    }
-                }
-            })();
-        </script>
 		<?php
 	}
 

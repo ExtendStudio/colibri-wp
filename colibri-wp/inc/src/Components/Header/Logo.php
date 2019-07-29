@@ -10,7 +10,6 @@ namespace ColibriWP\Theme\Components\Header;
 
 use ColibriWP\Theme\Core\ComponentBase;
 use ColibriWP\Theme\Core\Hooks;
-use ColibriWP\Theme\Core\Utils;
 use ColibriWP\Theme\Defaults;
 use ColibriWP\Theme\Translations;
 use ColibriWP\Theme\View;
@@ -24,7 +23,7 @@ class Logo extends ComponentBase {
 
 		$prefix = static::$settings_prefix;
 
-		$controls       = array( 'blogname', 'custom_logo', );
+		$controls       = array( 'blogname', 'blogdescription', 'custom_logo');
 		$priority_start = 20;
 
 		foreach ( $controls as $index => $control ) {
@@ -36,110 +35,34 @@ class Logo extends ComponentBase {
 				$instance->json['colibri_tab'] = "content";
 				$instance->priority            = ( $priority_start + $index * 5 );
 
-				$active_rule_value = "text";
-
-				if ( $control == 'custom_logo' ) {
-					$active_rule_value = "image";
-
+				if ( $control == 'custom_logo' || $control == 'alternate_logo' ) {
+					$instance->json['active_rules'] = array(
+						array(
+							"setting"  => "{$prefix}props.layoutType",
+							"operator" => "=",
+							"value"    => "image",
+							"selective_refresh"    => static :: selectiveRefreshSelector(),
+							'colibri_selective_refresh_class' => static::class
+						),
+					);
 				}
-
-				/** @var \WP_Customize_Setting $setting */
-				$setting                        = $instance->setting;
-				$setting->transport             = 'postMessage';
-				$instance->json['active_rules'] = array(
-					array(
-						"setting"  => "{$prefix}props.layoutType",
-						"operator" => "=",
-						"value"    => $active_rule_value,
-					),
-				);
-			}
-
-			if ( $wp_customize->selective_refresh ) {
-				$id                = static::selectiveRefreshSelector();
-				$partial           = $wp_customize->selective_refresh->get_partial( Utils::slugify( $id ) );
-				$partial->settings = array_merge(
-					$partial->settings,
-					$controls
-				);
 			}
 		}
 	}
 
 	public static function selectiveRefreshSelector() {
-		$selector = Defaults::get( static::$settings_prefix . 'selective_selector', false );
-
-		return $selector;
-	}
-
-	/**
-	 * @return array();
-	 */
-	protected static function getOptions() {
-		Hooks::colibri_add_action( 'rearrange_customizer_components', array( __CLASS__, "rearrangeControls" ) );
-
-		$prefix = static::$settings_prefix;
-
-		return array(
-			"sections" => array(
-				"{$prefix}section" => array(
-					'title'  => Translations::get( 'logo' ),
-					'panel'  => 'header_panel',
-					'type'   => 'colibri_section',
-					'hidden' => true
-				)
-			),
-
-			"settings" => array(
-
-				"alternate_logo" => array(
-					'default' => Defaults::get( "dark_logo", "" ),
-					'control' => array(
-						'label'        => Translations::escHtml( "alternate_logo_image" ),
-						'type'         => 'image',
-						'section'      => "{$prefix}section",
-						'priority'     => 35,
-						'colibri_tab'  => "content",
-						'active_rules' => array(
-							array(
-								"setting"  => "{$prefix}props.layoutType",
-								"operator" => "=",
-								"value"    => "image",
-							),
-						)
-					),
-
-				),
-
-				"{$prefix}props.layoutType" => array(
-					'default' => Defaults::get( "{$prefix}props.layoutType" ),
-					'control' => array(
-						'label'       => Translations::get( 'layout_type' ),
-						'type'        => 'select',
-						'section'     => "{$prefix}section",
-						'colibri_tab' => "content",
-						'choices'     => array(
-							'image' => Translations::escHtml( "logo_image_only" ),
-							'text'  => Translations::escHtml( "site_title_text_only" ),/*
-							'image_text_v' => Translations::escHtml( "image_with_text_below" ),
-							'image_text_h'    => Translations::escHtml( "image_with_text_right" ),
-							'text_image_v'    => Translations::escHtml( "image_with_text_above" ),
-							'text_image_h'    => Translations::escHtml( "image_with_text_left" ),*/
-						),
-					),
-				),
-			),
-		);
-	}
-
-	public function getPenPosition() {
-		return static::PEN_ON_RIGHT;
+		return Defaults::get( static::$settings_prefix . 'selective_selector', false );
 	}
 
 	public function renderContent() {
 		View::partial( 'front-header', 'logo', array(
 			"component" => $this,
 		) );
+	}
+
+	public function getHomeUrl() {
+		if (is_customize_preview()) return '/';
+		return esc_url( home_url( '/' ) );
 	}
 
 	public function customLogoUrl() {
@@ -173,17 +96,64 @@ class Logo extends ComponentBase {
 
 	public function getLayoutType() {
 		$prefix = static::$settings_prefix;
-
 		return $this->mod( "{$prefix}props.layoutType" );
 	}
 
 
 	public function printTextLogo() {
-		echo sprintf( '<a class="text-logo" data-type="group" data-dynamic-mod="true" href="%1$s">%2$s</a>',
-			$this->getHomeurl(), get_bloginfo( 'name' ) );
+		echo sprintf( '<a class="text-logo" data-type="group" data-dynamic-mod="true" href="%1$s">%2$s</a>', $this->getHomeurl(), get_bloginfo( 'name' ) );
 	}
 
-	public function getHomeUrl() {
-		return esc_url( home_url( '/' ) );
+	/**
+	 * @return array();
+	 */
+	protected static function getOptions() {
+		Hooks::colibri_add_action( 'rearrange_customizer_components', array( __CLASS__, "rearrangeControls" ) );
+
+		$prefix = static::$settings_prefix;
+
+		return array(
+			"sections" => array(
+				"{$prefix}section" => array(
+					'title'  => Translations::get( 'logo' ),
+					'panel'  => 'header_panel',
+					'type'   => 'colibri_section',
+					'hidden' => true
+				)
+			),
+
+			"settings" => array(
+
+				"alternate_logo" => array(
+					'default' => Defaults::get( "dark_logo", "" ),
+					'control' => array(
+						'label'       => Translations::escHtml( "alternate_logo_image" ),
+						'type'        => 'image',
+						'section'     => "{$prefix}section",
+						'priority'    => 35,
+						'colibri_tab' => "content",
+					),
+
+				),
+
+				"{$prefix}props.layoutType" => array(
+					'default' => Defaults::get( "{$prefix}props.layoutType" ),
+					'control' => array(
+						'label'       => Translations::get( 'layout_type' ),
+						'type'        => 'select',
+						'section'     => "{$prefix}section",
+						'colibri_tab' => "content",
+						'choices'     => array(
+							'image' => Translations::escHtml( "logo_image_only" ),
+							'text'  => Translations::escHtml( "site_title_text_only" ),/*
+							'image_text_v' => Translations::escHtml( "image_with_text_below" ),
+							'image_text_h'    => Translations::escHtml( "image_with_text_right" ),
+							'text_image_v'    => Translations::escHtml( "image_with_text_above" ),
+							'text_image_h'    => Translations::escHtml( "image_with_text_left" ),*/
+						),
+					),
+				),
+			),
+		);
 	}
 }

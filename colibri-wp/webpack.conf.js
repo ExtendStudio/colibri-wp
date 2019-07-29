@@ -11,8 +11,7 @@ module.exports = {
     resolve: {
         alias: {
             '@': resolveColibriEditor(''),
-            '@root/static': resolveColibriEditor('/../colibri-static'),
-            '@root/static-free': resolveColibriEditor('/../colibri-static-free'),
+            '@root/static':resolveColibriEditor('/../colibri-static'),
         },
     },
     module: {

@@ -17,7 +17,7 @@ class RepeaterControl extends VueControl {
 
         <div class="colibri-fullwidth">
             <div class="colibri-fullwidth">
-                <el-collapse v-sortable-el-accordion="onSortEnd">
+                <el-collapse v-sortable="onSortEnd">
 
                     <el-collapse-item v-for="(item,index) in items" :name="index" :key="item.index">
 

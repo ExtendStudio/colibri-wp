@@ -9,13 +9,12 @@ return array(
 	'header_sections'             => __( 'Header Sections', 'colibri-wp' ),
 	'footer_sections'             => __( 'Footer Sections', 'colibri-wp' ),
 	'content_sections'            => __( 'Content Sections', 'colibri-wp' ),
-	'content_settings'            => __( 'Content Settings', 'colibri-wp' ),
 	'general_settings'            => __( 'General Settings', 'colibri-wp' ),
 	'top_bar_settings'            => __( 'Top Bar Settings', 'colibri-wp' ),
 	'nav_settings'                => __( 'Navigation Settings', 'colibri-wp' ),
 	'hero_settings'               => __( 'Hero Settings', 'colibri-wp' ),
 	'footer_settings'             => __( 'Footer Settings', 'colibri-wp' ),
-	'blog_settings'               => __( 'Blog Settings', 'colibri-wp' ),
+	'content_settings'            => __( 'Content Settings', 'colibri-wp' ),
 	'content'                     => __( 'Content', 'colibri-wp' ),
 	'style'                       => __( 'Style', 'colibri-wp' ),
 	'advanced'                    => __( 'Advanced', 'colibri-wp' ),
@@ -152,8 +151,6 @@ return array(
 	'icons'                       => __( 'Icons', 'colibri-wp' ),
 	'align'                       => __( 'Align', 'colibri-wp' ),
 	'spacing'                     => __( 'Spacing', 'colibri-wp' ),
-	'spacing_top'                 => __( 'Spacing top', 'colibri-wp' ),
-	'spacing_bottom'              => __( 'Spacing bottom', 'colibri-wp' ),
 	'top'                         => __( 'Top', 'colibri-wp' ),
 	'bottom'                      => __( 'Bottom', 'colibri-wp' ),
 	'full_height'                 => __( 'Full Height', 'colibri-wp' ),
@@ -165,6 +162,7 @@ return array(
 	'vertical'                    => __( 'Vertical', 'colibri-wp' ),
 	'spread'                      => __( 'Spread', 'colibri-wp' ),
 	'blur'                        => __( 'Blur', 'colibri-wp' ),
+	'box_shadow'                  => __( 'Box shadow', 'colibri-wp' ),
 	'frame_options'               => __( 'Frame options', 'colibri-wp' ),
 	'type'                        => __( 'Type', 'colibri-wp' ),
 	'border'                      => __( 'Border', 'colibri-wp' ),
@@ -202,7 +200,7 @@ return array(
 	"container_width"             => __( "Container width", 'colibri-wp' ),
 	"full_width"                  => __( "Full width", 'colibri-wp' ),
 	"transparent"                 => __( "Transparent", 'colibri-wp' ),
-	"transparent_nav"             => __( "Transparent nav", 'colibri-wp' ),
+	"overlap"                     => __( "Overlap header", 'colibri-wp' ),
 	"button_align"                => __( "Button align", 'colibri-wp' ),
 
 	//logo
@@ -213,12 +211,12 @@ return array(
 	"navigation_padding"          => __( "Navigation padding", 'colibri-wp' ),
 	'logo'                        => __( 'Logo', 'colibri-wp' ),
 
-	'logo_image_only'        => __( 'Logo image only', 'colibri-wp' ),
-	'site_title_text_only'   => __( 'Site title text only', 'colibri-wp' ),
-	'image_with_text_below'  => __( 'Image with text below', 'colibri-wp' ),
-	'image_with_text_right'  => __( 'Image with text on the right', 'colibri-wp' ),
-	'image_with_text_above'  => __( 'Image with text above', 'colibri-wp' ),
-	'image_with_text_left'   => __( 'Image with text on the left', 'colibri-wp' ),
+	'logo_image_only'        => __( 'Logo image only' ),
+	'site_title_text_only'   => __( 'Site title text only' ),
+	'image_with_text_below'  => __( 'Image with text below' ),
+	'image_with_text_right'  => __( 'Image with text on the right' ),
+	'image_with_text_above'  => __( 'Image with text above' ),
+	'image_with_text_left'   => __( 'Image with text on the left' ),
 
 	// menu
 	'menu'                   => __( 'Menu', 'colibri-wp' ),
@@ -254,37 +252,32 @@ return array(
 	'shutter_out_vertical'   => __( 'Shutter out vertical', 'colibri-wp' ),
 
 	//navbar
-	'logo_nav'               => __( 'Logo / Nav', 'colibri-wp' ),//logo /nav
-	'logo_above'             => __( 'Logo above', 'colibri-wp' ),//logo above
-	'logo_nav_cta'           => __( 'Logo / nav / cta', 'colibri-wp' ),//logo above
-	'nav_logo_cta'           => __( 'Nav / logo / cta', 'colibri-wp' ),//logo above
-	'nav_below_logo_cta'     => __( 'Nav below / logo / cta', 'colibri-wp' ),//logo above
+
+	'logo_nav'                           => __( 'Logo / Nav', 'colibri-wp' ),//logo /nav
+	'logo_above'                         => __( 'Logo above', 'colibri-wp' ),//logo above
+	'logo_nav_cta'                       => __( 'Logo / nav / cta', 'colibri-wp' ),//logo above
+	'nav_logo_cta'                       => __( 'Nav / logo / cta', 'colibri-wp' ),//logo above
+	'nav_below_logo_cta'                 => __( 'Nav below / logo / cta', 'colibri-wp' ),//logo above
 
 	// frontend
-
-	"read_more" => __( 'Read More', 'colibri-wp' ),
+	"read_more"                          => __( 'Read More', 'colibri-wp' ),
 
 	//footer
-
-	"footer_parallax" => __( 'Use footer parallax', 'colibri-wp' ),
+	"footer_parallax"                    => __( 'Use footer parallax', 'colibri-wp' ),
 
 	//plugin
-
-	"plugin_message"     => __( 'To enable all the theme features, please install the companion plugin', 'colibri-wp' ),
-	"plugin_message_btn" => __( 'Install companion plugin', 'colibri-wp' ),
+	"plugin_message"                     => __( 'To enable all the theme features, please install the companion plugin', 'colibri-wp' ),
+	"plugin_message_btn"                 => __( 'Install companion plugin', 'colibri-wp' ),
 
 	//blog
-
-	"posts_per_row"                 => __( 'Posts per row', 'colibri-wp' ),
-	"show_blog_sidebar"             => __( 'Show blog sidebar ', 'colibri-wp' ),
-	"post_highlight"                => __( 'Post highlight', 'colibri-wp' ),
-	"show_post_title_in_post_page"  => __( 'Show post title in post page', 'colibri-wp' ),
-	"show_post_meta"                => __( 'Show post meta', 'colibri-wp' ),
-	"enable_masonry"                => __( 'Enable masonry', 'colibri-wp' ),
-	"show_thumbnail_placeholder"    => __( 'Show thumbnail placeholder', 'colibri-wp' ),
-	"thumbnail_placeholder_color"   => __( 'Thumbnail placeholder color', 'colibri-wp' ),
-	"blog_show_post_featured_image" => __( 'Use post featured image as hero background when available', 'colibri-wp' ),
-
-	"blog_show_post_featured_image_desc" => __( 'The inner pages hero background should be set to image',
-		'colibri-wp' ),
+	"posts_per_row"                      => __( 'Posts per row', 'colibri-wp' ),
+	"show_blog_sidebar"                  => __( 'Show blog sidebar ', 'colibri-wp' ),
+	"post_highlight"                     => __( 'Post highlight', 'colibri-wp' ),
+	"show_post_title_in_post_page"       => __( 'Show post title in post page', 'colibri-wp' ),
+	"show_post_meta"                     => __( 'Show post meta', 'colibri-wp' ),
+	"enable_masonry"                     => __( 'Enable masonry', 'colibri-wp' ),
+	"show_thumbnail_placeholder"         => __( 'Show thumbnail placeholder', 'colibri-wp' ),
+	"thumbnail_placeholder_color"        => __( 'Thumbnail placeholder color', 'colibri-wp' ),
+	"blog_show_post_featured_image"      => __( 'Use post featured image as hero background when available', 'colibri-wp' ),
+	"blog_show_post_featured_image_desc" => __( 'The inner pages hero background should be set to image', 'colibri-wp' ),
 );

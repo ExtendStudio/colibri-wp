@@ -11,24 +11,22 @@ namespace ColibriWP\Theme\Components;
 
 use ColibriWP\Theme\Core\ComponentBase;
 use ColibriWP\Theme\Defaults;
-use ColibriWP\Theme\Translations;
 use ColibriWP\Theme\View;
+use ColibriWP\Theme\Translations;
 
 class MainContent extends ComponentBase {
 
-	public static function selectiveRefreshSelector() {
-		return ".colibri-main-content-area";
-	}
-
 	protected static function getOptions() {
-		$prefix = 'content.';
-
+		$prefix   = 'content.';
+		$selector = 'content';
 		return array(
 			"settings" => array(
-				"blog_posts_per_row" => array(
+
+				"blog_posts_per_row"                => array(
 					'default' => Defaults::get( "blog_posts_per_row" ),
 					'control' => array(
 						'label'       => Translations::get( 'posts_per_row' ),
+						'type'        => 'hidden',
 						'section'     => "content",
 						'colibri_tab' => 'content',
 						'type'        => 'button-group',
@@ -43,7 +41,7 @@ class MainContent extends ComponentBase {
 					)
 				),
 
-				"{$prefix}separator1" => array(
+				"{$prefix}separator1"        => array(
 					'default' => '',
 					'control' => array(
 						'label'       => '',
@@ -53,7 +51,7 @@ class MainContent extends ComponentBase {
 					),
 				),
 
-				"blog_sidebar_enabled" => array(
+				"blog_sidebar_enabled"              => array(
 					'default' => Defaults::get( "blog_sidebar_enabled" ),
 					'control' => array(
 						'label'       => Translations::get( 'show_blog_sidebar' ),
@@ -62,8 +60,17 @@ class MainContent extends ComponentBase {
 						'colibri_tab' => 'content',
 					)
 				),
-
-				"blog_post_meta_enabled" => array(
+				/*
+				"show_single_item_title"            => array(
+					'default' => Defaults::get( "show_single_item_title" ),
+					'control' => array(
+						'label'       => Translations::get( 'show_post_title_in_post_page' ),
+						'type'        => 'switch',
+						'section'     => "content",
+						'colibri_tab' => 'content',
+					)
+				),*/
+				"blog_post_meta_enabled"            => array(
 					'default' => Defaults::get( "blog_post_meta_enabled" ),
 					'control' => array(
 						'label'       => Translations::get( 'show_post_meta' ),
@@ -72,9 +79,9 @@ class MainContent extends ComponentBase {
 						'colibri_tab' => 'content',
 					)
 				),
-				"blog_enable_masonry"    => array(
-					'default'   => Defaults::get( "blog_enable_masonry" ),
-					'control'   => array(
+				"blog_enable_masonry"            => array(
+					'default' => Defaults::get( "blog_enable_masonry" ),
+					'control' => array(
 						'label'       => Translations::get( 'enable_masonry' ),
 						'type'        => 'switch',
 						'section'     => "content",
@@ -83,13 +90,28 @@ class MainContent extends ComponentBase {
 					'js_output' => array(
 						array(
 							'selector' => '[data-colibri-component="masonry"]',
+							'action'   => "colibri-set-attr",
+							'value'    => 'data-show-masonry'
+						),
+						array(
+							'selector' => '[data-colibri-component="masonry"]',
 							'action'   => "colibri-component-toggle",
 							'value'    => 'masonry'
 						),
 					),
 				),
-
-				"{$prefix}separator3"               => array(
+/*
+				"blog_post_highlight_enabled" => array(
+					'default' => Defaults::get( "blog_post_highlight_enabled" ),
+					'control' => array(
+						'label'       => Translations::get( 'post_highlight' ),
+						'type'        => 'switch',
+						'section'     => "content",
+						'colibri_tab' => 'content',
+					),
+				),
+*/
+				"{$prefix}separator3"        => array(
 					'default' => '',
 					'control' => array(
 						'label'       => '',
@@ -124,7 +146,7 @@ class MainContent extends ComponentBase {
 					),
 				),
 
-				"{$prefix}separator4" => array(
+				"{$prefix}separator4"        => array(
 					'default' => '',
 					'control' => array(
 						'label'       => '',
@@ -148,7 +170,7 @@ class MainContent extends ComponentBase {
 			"sections" => array(
 
 				"content" => array(
-					'title'    => Translations::get( 'blog_settings' ),
+					'title'    => Translations::get( 'content_settings' ),
 					'priority' => 2,
 					'panel'    => 'content_panel',
 					'type'     => 'colibri_section',
@@ -192,7 +214,7 @@ class MainContent extends ComponentBase {
 				} );
 
 			} );
-		}, array( array( 'blog-page', 'colibri-main-content-area' ) ) );
+		}, array( array( 'blog-page' ) ) );
 	}
 
 }

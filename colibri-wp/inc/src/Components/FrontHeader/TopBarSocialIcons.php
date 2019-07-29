@@ -15,6 +15,21 @@ class TopBarSocialIcons extends ComponentBase {
 		return Defaults::get( static::$settings_prefix . 'selective_selector', false );
 	}
 
+	public function renderContent() {
+		View::partial( 'front-header', 'top-bar/social-icons', array(
+			"component" => $this,
+		) );
+	}
+
+	public function printIcons() {
+		$icons = $this->mod( static::$settings_prefix . 'localProps.icons', array() );
+		if ($icons)
+		foreach ( $icons as $icon ) {
+			View::partial( 'front-header', "top-bar/social-icon", $icon );
+		}
+	}
+
+
 	/**
 	 * @return array();
 	 */
@@ -48,7 +63,7 @@ class TopBarSocialIcons extends ComponentBase {
 							'icon' => array(
 								'type'    => 'icon',
 								'label'   => Translations::get( 'icon' ),
-								'default' => Defaults::get( 'icons.facebook' ),
+								'default' =>Defaults::get('icons.facebook'),
 							),
 
 							'link_value' => array(
@@ -61,24 +76,5 @@ class TopBarSocialIcons extends ComponentBase {
 				),
 			),
 		);
-	}
-
-	public function getPenPosition() {
-		return static::PEN_ON_RIGHT;
-	}
-
-	public function renderContent() {
-		View::partial( 'front-header', 'top-bar/social-icons', array(
-			"component" => $this,
-		) );
-	}
-
-	public function printIcons() {
-		$icons = $this->mod( static::$settings_prefix . 'localProps.icons', array() );
-		if ( $icons ) {
-			foreach ( $icons as $icon ) {
-				View::partial( 'front-header', "top-bar/social-icon", $icon );
-			}
-		}
 	}
 }

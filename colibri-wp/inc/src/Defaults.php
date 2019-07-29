@@ -29,14 +29,12 @@ class Defaults {
 		static::$loaded   = true;
 	}
 
-	public static function getDefaults() {
+	public static function getDefaults( ) {
 		return static::$defaults;
 	}
 
 	public static function get( $key, $fallback = null ) {
 		static::load();
-
 		return Utils::pathGet( static::$defaults, $key, $fallback );
 	}
-
 }

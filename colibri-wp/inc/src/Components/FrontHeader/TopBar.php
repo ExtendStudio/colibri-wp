@@ -6,7 +6,7 @@ use ColibriWP\Theme\Components\Header\TopBar as HeaderTopBar;
 use ColibriWP\Theme\View;
 
 
-class TopBar extends HeaderTopBar {
+class TopBar extends HeaderTopBar{
 	protected static $settings_prefix = "header_front_page.top_bar.";
 
 	public function renderContent() {

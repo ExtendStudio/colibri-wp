@@ -28,8 +28,6 @@ class AssetsManager {
 		);
 
 	private $localized = array();
-	private $base_url = "";
-	private $is_hot = false;
 
 	/**
 	 * AssetsManager constructor.
@@ -39,17 +37,6 @@ class AssetsManager {
 	public function __construct( $theme ) {
 		$this->theme = $theme;
 		$this->key   = Defaults::get( 'assets_js_key', 'THEME_DATA' );
-
-		if ( file_exists( get_template_directory() . "/resources/hot" ) ) {
-			$this->is_hot   = true;
-			$this->base_url = file_get_contents( get_template_directory() . "/resources/hot" );
-		} else {
-			$this->base_url = get_template_directory_uri() . "/resources";
-		}
-	}
-
-	public function getBaseURL() {
-		return $this->base_url;
 	}
 
 	public function boot() {
@@ -71,6 +58,7 @@ class AssetsManager {
 
 
 	public function doRegisterScript() {
+
 
 		foreach ( $this->registered['style'] as $handle => $data ) {
 			wp_register_style( $handle, $data['src'], $data['deps'], $data['ver'], $data['media'] );
@@ -107,8 +95,8 @@ class AssetsManager {
 			}
 		}
 
-		if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
-			wp_enqueue_script( 'comment-reply' );
+		if (is_singular() && comments_open() && get_option('thread_comments')) {
+			wp_enqueue_script('comment-reply');
 		}
 	}
 
@@ -197,8 +185,8 @@ class AssetsManager {
 	/**
 	 * @param string $handle
 	 * @param string $rel
-	 * @param array $deps
-	 * @param bool $auto_enqueue
+	 * @param array  $deps
+	 * @param bool   $auto_enqueue
 	 *
 	 * @return AssetsManager
 	 */
@@ -216,13 +204,13 @@ class AssetsManager {
 	/**
 	 * @param string $handle
 	 * @param string $rel
-	 * @param array $deps
-	 * @param bool $auto_enqueue
+	 * @param array  $deps
+	 * @param bool   $auto_enqueue
 	 *
 	 * @return AssetsManager
 	 */
 	public function registerTemplateScript( $handle, $rel, $deps = array(), $auto_enqueue = true ) {
-		$this->registerScript( $handle, $this->getBaseURL() . $rel, $deps, $auto_enqueue );
+		$this->registerScript( $handle, get_template_directory_uri() . $rel, $deps, $auto_enqueue );
 
 		return $this;
 	}
@@ -232,7 +220,7 @@ class AssetsManager {
 	 * @param       $handle
 	 * @param       $url
 	 * @param array $deps
-	 * @param bool $auto_enqueue
+	 * @param bool  $auto_enqueue
 	 *
 	 * @return AssetsManager
 	 */
@@ -249,24 +237,14 @@ class AssetsManager {
 	/**
 	 * @param string $handle
 	 * @param string $rel
-	 * @param array $deps
-	 * @param bool $auto_enqueue
+	 * @param array  $deps
+	 * @param bool   $auto_enqueue
 	 *
 	 * @return AssetsManager
 	 */
 	public function registerTemplateStyle( $handle, $rel, $deps = array(), $auto_enqueue = true ) {
 
-		$this->registerStyle( $handle, $this->getBaseURL() . $rel, $deps, $auto_enqueue );
-
-		return $this;
-	}
-
-	public function registerStylesheet( $handle, $hot_rel, $deps = array(), $auto_enqueue = true ) {
-		if ( $this->is_hot ) {
-			$this->registerTemplateStyle( $handle, "/{$hot_rel}", $deps, $auto_enqueue );
-		} else {
-			$this->registerStyle( $handle, get_stylesheet_uri(), $deps, $auto_enqueue );
-		}
+		$this->registerStyle( $handle, get_template_directory_uri() . $rel, $deps, $auto_enqueue );
 
 		return $this;
 	}
@@ -274,7 +252,7 @@ class AssetsManager {
 	/**
 	 * @param string $handle
 	 * @param string $key
-	 * @param array $data
+	 * @param array  $data
 	 *
 	 * @return AssetsManager
 	 */
@@ -293,12 +271,4 @@ class AssetsManager {
 		return $this;
 	}
 
-
-	public static function addInlineScriptCallback( $handle, $callback ) {
-		\wp_add_inline_script( $handle, Utils::buffer_wrap( $callback, true ) );
-	}
-
-	public static function addInlineStyleCallback( $handle, $callback ) {
-		\wp_add_inline_style( $handle, Utils::buffer_wrap( $callback, true ) );
-	}
 }

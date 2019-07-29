@@ -15,6 +15,33 @@ class TopBarListIcons extends ComponentBase {
 		return Defaults::get( static::$settings_prefix . 'selective_selector', false );
 	}
 
+	public function renderContent() {
+		View::partial( 'front-header', 'top-bar/list-icons', array(
+			"component" => $this,
+		) );
+	}
+
+	public function printIcons() {
+		$icons = $this->mod( static::$settings_prefix . 'localProps.iconList', array() );
+		if ($icons) {
+			$count = count($icons);
+			$i = 0;
+			foreach ( $icons as $icon ) {
+				if ($i == 0) {
+					$name = 'first';
+				} else if ($i == $count - 1) {
+					$name = 'last';
+				} else
+				{
+					$name = 'middle';
+				}
+				$i++;
+				View::partial( 'front-header', "top-bar/list-icon-$name", $icon );
+			}
+		}
+	}
+
+
 	/**
 	 * @return array();
 	 */
@@ -53,7 +80,7 @@ class TopBarListIcons extends ComponentBase {
 							'icon' => array(
 								'type'    => 'icon',
 								'label'   => Translations::get( 'icon' ),
-								'default' => Defaults::get( 'icons.facebook' ),
+								'default' =>Defaults::get('icons.facebook'),
 							),
 
 							'link_value' => array(
@@ -67,36 +94,5 @@ class TopBarListIcons extends ComponentBase {
 				),
 			),
 		);
-	}
-
-	public function getPenPosition() {
-		return static::PEN_ON_RIGHT;
-	}
-
-	public function renderContent() {
-		View::partial( 'front-header', 'top-bar/list-icons', array(
-			"component" => $this,
-		) );
-	}
-
-	public function printIcons() {
-		$icons = $this->mod( static::$settings_prefix . 'localProps.iconList', array() );
-		if ( $icons ) {
-			$count = count( $icons );
-
-			for ( $i = 0; $i < $count; $i ++ ) {
-				$icon = $icons[ $i ];
-				$name = 'middle';
-
-				if ( $i === 0 ) {
-					$name = 'first';
-				}
-				if ( $i + 1 === $count ) {
-					$name = 'last';
-				}
-				View::partial( 'front-header', "top-bar/list-icon-$name", $icon );
-			}
-
-		}
 	}
 }

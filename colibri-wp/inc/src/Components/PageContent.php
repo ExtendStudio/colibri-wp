@@ -4,59 +4,10 @@ namespace ColibriWP\Theme\Components;
 
 
 use ColibriWP\Theme\Core\ComponentBase;
-use ColibriWP\Theme\Translations;
 use ColibriWP\Theme\View;
 
 class PageContent extends ComponentBase {
 
-	public static function selectiveRefreshSelector() {
-		return '.colibri-page-content';
-	}
-
-	/**
-	 * @return array();
-	 */
-	protected static function getOptions() {
-		$prefix = 'page_content_';
-
-		return array(
-			"sections" => array(
-				"{$prefix}section" => array(
-					'title' => Translations::get( 'content_settings' ),
-					'panel' => 'content_panel',
-					'type'  => 'colibri_section',
-				)
-			),
-
-			"settings" => array(
-				"{$prefix}pen" => array(
-					'control' => array(
-						'type'        => 'pen',
-						'section'     => "{$prefix}section",
-						'colibri_tab' => 'content',
-					),
-
-				),
-
-				"{$prefix}plugin-content" => array(
-					'control' => array(
-						'type'        => 'plugin-message',
-						'section'     => "{$prefix}section",
-						'colibri_tab' => 'content',
-					)
-				),
-
-			),
-
-			"panels" => array(
-				"content_panel" => array(
-					'priority' => 2,
-					'title'    => Translations::get( 'content_sections' ),
-					'type'     => 'colibri_panel',
-				),
-			),
-		);
-	}
 
 	public function renderContent() {
 
@@ -70,6 +21,13 @@ class PageContent extends ComponentBase {
 					} );
 				} );
 			} );
-		}, array( array( 'page-content', 'colibri-page-content' ) ) );
+		}, array(array('page-content')) );
+	}
+
+	/**
+	 * @return array();
+	 */
+	protected static function getOptions() {
+		return array();
 	}
 }

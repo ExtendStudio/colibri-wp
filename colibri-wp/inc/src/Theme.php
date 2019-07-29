@@ -26,7 +26,6 @@ class Theme {
 		$this->assets_manager = new AssetsManager( $this );
 
 		add_action( 'after_setup_theme', array( $this, 'afterSetup' ) );
-
 	}
 
 	public static function load() {

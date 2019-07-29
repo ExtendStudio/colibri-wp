@@ -7,7 +7,6 @@ namespace ColibriWP\Theme;
 use ColibriWP\Theme\Core\ConfigurableInterface;
 use ColibriWP\Theme\Core\Hooks;
 use ColibriWP\Theme\Core\Tree;
-use ColibriWP\Theme\Core\Utils;
 use ColibriWP\Theme\Customizer\ControlFactory;
 use ColibriWP\Theme\Customizer\Controls\ColibriControl;
 use ColibriWP\Theme\Customizer\CustomizerApi;
@@ -18,12 +17,12 @@ class Customizer {
 
 	const TYPE_CONTROL = "control";
 	const TYPE_SECTION = "section";
-	const TYPE_PANEL = "panel";
+	const TYPE_PANEL   = "panel";
 
-	private $theme = null;
+	private $theme    = null;
 	private $options;
 	private $sections = array();
-	private $panels = array();
+	private $panels   = array();
 	private $settings = array();
 
 
@@ -33,15 +32,6 @@ class Customizer {
 		$this->theme   = $theme;
 		$this->options = new Tree();
 
-	}
-
-	public static function sanitize( $value ) {
-
-		if ( is_bool( $value ) ) {
-			return $value;
-		}
-
-		return (string) $value;
 	}
 
 	public function boot() {
@@ -90,21 +80,7 @@ class Customizer {
 
 	}
 
-	public function inPreview( $callback ) {
-		if ( is_customize_preview() && is_callable( $callback ) ) {
-			call_user_func( $callback );
-		}
-	}
-
-	public function onPreviewInit( $callback, $priorty = 10 ) {
-
-		add_action( 'customize_preview_init', $callback, $priorty );
-	}
-
 	public function prepareOptions() {
-
-		new HeaderPresets();
-
 		$components = $this->theme->getRepository()->getAllDefinitions();
 		$options    = array(
 			"settings" => array(),
@@ -139,31 +115,36 @@ class Customizer {
 		$tabs     = array( 'content' => true, 'style' => true, 'layout' => true );
 		$sections = array_flip( array_keys( $options['sections'] ) );
 		array_walk( $sections, function ( &$value, $key ) use ( $tabs ) {
-			$value = array( 'tabs' => $tabs );
+			$value = array('tabs' => $tabs);
 		} );
 
-		//set section > tabs that have controls empty = false
+        //set section > tabs that have controls empty = false
 		foreach ( $options['settings'] as $setting => $value ) {
-			$section                              = $value['control']['section'];
-			$tab                                  = Utils::pathGet( $value, 'control.colibri_tab', 'content' );
+			$section                      = $value['control']['section'];
+			$tab                          = $value['control']['colibri_tab'];
 			$sections[ $section ]['tabs'][ $tab ] = false;
 		}
 
-		foreach ( $sections as $section => $values ) {
-			foreach ( $values['tabs'] as $tab => $tab_empty ) {
-				if ( $tab_empty ) {
-					//var_dump($section);
-					$key                         = "{$section}-{$tab}-plugin-message";
-					$options['settings'][ $key ] = array(
-						'control' => array(
-							'type'        => 'plugin-message',
-							'section'     => $section,
-							'colibri_tab' => $tab,
-						)
-					);
-				}
-			}
-		}
+		foreach ( $sections as $section => $values )
+        {
+            foreach ($values['tabs'] as $tab => $tab_empty)
+            {
+                if ($tab_empty)
+                {
+                    //var_dump($section);
+	                $key = str_replace('.section', '', $section ) . ".$tab.plugin";
+	                $options['settings'][$key] = array(
+		                'default' => '',
+		                'control' => array(
+			                'label'       => '',//Translations::get( 'plugin_message' ),
+			                'type'        => 'plugin-message',
+			                'section'     => $section,
+			                'colibri_tab' => $tab,
+		                )
+	                );
+                }
+            }
+        }
 
 		$this->options->setData( $options );
 	}
@@ -192,6 +173,7 @@ class Customizer {
 
 	}
 
+
 	public function registerPanels() {
 		$this->panels = new Tree( $this->options->findAt( "panels" ) );
 
@@ -200,6 +182,7 @@ class Customizer {
 		} );
 	}
 
+
 	public function registerSections() {
 		$this->sections = new Tree( $this->options->findAt( "sections" ) );
 
@@ -207,6 +190,7 @@ class Customizer {
 			SectionFactory::make( $id, $data );
 		} );
 	}
+
 
 	/**
 	 * @param \WP_Customize_Manager $wp_customize
@@ -259,12 +243,14 @@ class Customizer {
 
 	}
 
+
 	/**
 	 * @param \WP_Customize_Manager $wp_customize
 	 */
 	public function registerControls( $wp_customize ) {
 
 	}
+
 
 	/**
 	 * @param \WP_Customize_Manager $wp_customize
@@ -276,8 +262,7 @@ class Customizer {
 			$value['selective_refresh_settings'] = array();
 
 			foreach ( $partials as $partial ) {
-				$value['selective_refresh_settings'] = array_merge( $value['selective_refresh_settings'],
-					$partial['settings'] );
+				$value['selective_refresh_settings'] = array_merge( $value['selective_refresh_settings'], $partial['settings'] );
 			}
 
 			return $value;
@@ -297,32 +282,35 @@ class Customizer {
 	}
 
 	public function registerAssets() {
-
-
-		$base_url = $this->theme->getAssetsManager()->getBaseURL();
-
 		wp_register_script( Hooks::HOOK_PREFIX . "customizer",
-			$base_url . "/customizer/customizer.js", array( 'jquery' ),
+			get_template_directory_uri() . "/resources/customizer/customizer.js", array( 'jquery' ),
 			$this->theme->getVersion(), true );
 
 		wp_localize_script( Hooks::HOOK_PREFIX . "customizer", 'colibri_Customizer_Data',
 			Hooks::colibri_apply_filters( 'customizer_js_data', array(
 				'translations'        => Translations::all(),
 				'section_default_tab' => ColibriControl::DEFAULT_COLIBRI_TAB,
-				'style_tab'           => ColibriControl::STYLE_COLIBRI_TAB,
+				'style_tab' => ColibriControl::STYLE_COLIBRI_TAB,
 			) ) );
 
 		wp_register_style( Hooks::HOOK_PREFIX . "customizer",
-			$base_url . "/customizer/customizer.css", array( 'customize-controls' ),
+			get_template_directory_uri() . "/resources/customizer/customizer.css", array( 'customize-controls' ),
 			$this->theme->getVersion() );
 
 		wp_enqueue_style( Hooks::HOOK_PREFIX . "customizer" );
 		wp_enqueue_script( Hooks::HOOK_PREFIX . "customizer" );
 	}
 
+	public function inPreview( $callback ) {
+		if ( is_customize_preview() && is_callable( $callback ) ) {
+			call_user_func( $callback );
+		}
+	}
+
 	public function isInPreview() {
 		return \is_customize_preview();
 	}
+
 
 	public function isCustomizer( $callback ) {
 		if ( is_customize_preview() && is_callable( $callback ) ) {
@@ -330,59 +318,37 @@ class Customizer {
 		}
 	}
 
+
+	public function onPreviewInit( $callback, $priorty = 10 ) {
+
+		add_action( 'customize_preview_init', $callback, $priorty );
+	}
+
 	public function previewInit() {
 
-		$base_url = $this->theme->getAssetsManager()->getBaseURL();
-
 		wp_enqueue_style( Hooks::HOOK_PREFIX . "customizer_preview",
-			$base_url . "/customizer/preview.css", Theme::getInstance()->getVersion() );
+			get_template_directory_uri() . "/resources/customizer/preview.css", Theme::getInstance()->getVersion() );
 
 
 		wp_enqueue_script( Hooks::HOOK_PREFIX . "customizer_preview",
-			$base_url . "/customizer/preview.js", array(
+			get_template_directory_uri() . "/resources/customizer/preview.js", array(
 				'customize-preview',
 				'customize-selective-refresh'
 			),
 			Theme::getInstance()->getVersion(), true );
 
 
-		AssetsManager::addInlineScriptCallback(
-			Hooks::HOOK_PREFIX . "customizer_preview",
-			function () {
-				?>
-                <script type="text/javascript">
-                    (function () {
-                        function ready(callback) {
-                            if (document.readyState !== 'loading') {
-                                callback();
-                            } else {
-                                if (document.addEventListener) {
-                                    document.addEventListener('DOMContentLoaded', callback);
-
-                                } else {
-                                    document.attachEvent('onreadystatechange', function () {
-                                        if (document.readyState === 'complete') callback();
-                                    });
-                                }
-                            }
-                        }
-
-                        ready(function () {
-                            setTimeout(function () {
-                                parent.wp.customize.trigger('colibri_preview_ready');
-                            }, 500);
-                        })
-                    })();
-                </script>
-				<?php
-			}
-		);
 	}
+
 
 	/**
 	 * @return array
 	 */
 	public function getSettings() {
 		return $this->settings;
+	}
+
+	public static function sanitize( $value ) {
+		return (string) $value;
 	}
 }

@@ -2,33 +2,7 @@ let webpackConf = require("./webpack.conf");
 
 let mix = require('laravel-mix');
 
-let fs = require('fs');
-let postcss = require("postcss");
-let url = require("postcss-url");
-
 mix.webpackConfig(webpackConf);
-
-if (Mix.inProduction()) {
-    Config.uglify = false;
-}
-
-Mix.listen('configReady', (webpackConfig) => {
-    if (Mix.isUsing('hmr')) {
-        // Remove leading '/' from entry keys
-        webpackConfig.entry = Object.keys(webpackConfig.entry).reduce((entries, entry) => {
-            entries[entry.replace(/^\//, '')] = webpackConfig.entry[entry];
-            return entries;
-        }, {});
-
-        // Remove leading '/' from ExtractTextPlugin instances
-        webpackConfig.plugins.forEach((plugin) => {
-            if (plugin.constructor.name === 'ExtractTextPlugin') {
-                plugin.filename = plugin.filename.replace(/^\//, '');
-            }
-        });
-    }
-});
-
 mix
     .setResourceRoot('./')
     .setPublicPath('./resources')
@@ -37,7 +11,7 @@ mix
     .js('assets/src/theme/js/theme.js', './theme')
     .sass('assets/src/theme/css/theme.scss', "./theme")
 
-    // customizer UI
+// customizer UI
     .js('assets/src/customizer/js/customizer.js', './customizer')
     .sass('assets/src/customizer/css/customizer.scss', './customizer')
 
@@ -45,41 +19,9 @@ mix
     .js('assets/src/customizer/js/preview.js', './customizer')
     .sass('assets/src/customizer/css/preview.scss', './customizer')
 
-    .copy('assets/images', './resources/images');
+    .copy('assets/images','./resources/images');
 
-
-mix.sourceMaps(false);
-
-let themeHead = "/*\n" +
-    " Theme Name:   Colibri WP\n" +
-    " Version:      @@build@@\n" +
-    " Theme URI:    https://colibriwp.com/go/colibri-theme/\n" +
-    " Description:  Colibri Theme is a very flexible, multipurpose WordPress theme that takes the Customizer to the next level.\n" +
-    " Author:       Extendthemes\n" +
-    " Author URI:   https://colibriwp.com/\n" +
-    " License:      GNU General Public License version 3\n" +
-    " License URI:  http://www.opensource.org/licenses/gpl-license.php GPL v3.0 (or later)\n" +
-    " Tags:         entertainment, food-and-drink, portfolio, one-column, two-columns, right-sidebar, grid-layout, custom-header, custom-menu, custom-logo, full-width-template, theme-options, translation-ready, featured-images, threaded-comments\n" +
-    " Text Domain:  colibri-wp\n" +
-    "*/\n";
-
-if (!Mix.inProduction()) {
-    themeHead = "";
-}
-
-Mix.listen('build', () => {
-    const css = fs.readFileSync("./resources/theme/theme.css", "utf8");
-    const output = postcss()
-        .use(url({
-            url: "rebase"
-        }))
-        .process(css, {
-            from: "./resources/theme/theme.css",
-            to: "./style.css"
-        });
-
-    fs.writeFile('./style.css', themeHead + "\n" + output);
-});
+mix.sourceMaps();
 
 
 // Enable sourcemaps

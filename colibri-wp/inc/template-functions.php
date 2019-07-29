@@ -1,43 +1,31 @@
 <?php
 
-function colibriwp_page_title( $atts = array() ) {
-	$title = '';
-	if ( is_404() ) {
-		$title = __( 'Page not found', 'colibri-wp' );
-	} elseif ( is_search() ) {
-		$title = sprintf( __( 'Search Results for &#8220;%s&#8221;', 'colibri-wp' ), get_search_query() );
-	} elseif ( is_home() ) {
-		if ( is_front_page() ) {
-			$title = get_bloginfo( 'name' );
-		} else {
-			$title = single_post_title( '', false );
-		}
-	} elseif ( is_archive() ) {
-		if ( is_post_type_archive() ) {
-			$title = post_type_archive_title( '', false );
-		} else {
-			$title = get_the_archive_title();
-		}
-	} elseif ( is_single() ) {
-		$title = get_bloginfo( 'name' );
+function colibriwp_get_shortocode_atts( $shortcode ) {
+	$regex = str_replace( '_shortcode_', '\w+', get_shortcode_regex( array( '_shortcode_' ) ) );
+	if ( preg_match( '/' . $regex . '/', $shortcode, $matches ) ) {
+		$attr = shortcode_parse_atts( $matches[3] );
 
-		global $post;
-		if ( $post ) {
-			// apply core filter
-			$title = apply_filters( 'single_post_title', $post->post_title, $post );
-		}
-	} else {
-		$title = get_the_title();
+		return $attr;
 	}
 
-	echo "<span><" . $atts['tag'] . ">" . $title . "</" . $atts['tag'] . "></span>";
+	return array();
+}
+
+function colibriwp_page_title( $atts = array() ) {
+	$title = '';
+    if (get_theme_mod('show_single_item_title', true)) {
+	    $title = get_the_title();
+	}
+	$html = "<span><" . $atts['tag'] . " style='margin-bottom:0'>" . $title . "</" . $atts['tag'] . "></span>";
+
+	return $html;
 }
 
 function colibriwp_post_thumb_placeholder_classes( $atts = array() ) {
 	$result = 'colibri-post-thumbnail-has-placeholder';
 
-	$show_placeholder = get_theme_mod( 'blog_show_post_thumb_placeholder', true );
-	if ( $show_placeholder == '1' ) {
+	$show_placeholder = get_theme_mod('blog_show_post_thumb_placeholder', true);
+	if ($show_placeholder == '1') {
 		echo $result;
 	}
 }
@@ -54,20 +42,20 @@ function colibriwp_post_thumbnail_classes( $atts = array() ) {
 
 function colibriwp_post_thumbnail( $atts = array() ) {
 
-	$show_placeholder = get_theme_mod( 'blog_show_post_thumb_placeholder', true );
-	if ( ! has_post_thumbnail() && ! $show_placeholder ) {
+	$show_placeholder = get_theme_mod('blog_show_post_thumb_placeholder', true);
+	if ( ! has_post_thumbnail() && ! $show_placeholder) {
 		return;
 	}
 
 	if ( has_post_thumbnail() ) {
-		if ( \ColibriWP\Theme\Core\Utils::pathGet( $atts, 'link', false ) ) {
+		if ( $atts['link'] != "true" ) {
+			echo get_the_post_thumbnail();
+		} else {
 			?>
             <a href="<?php the_permalink(); ?>" title="<?php the_title_attribute(); ?>">
 				<?php echo get_the_post_thumbnail(); ?>
             </a>
 			<?php
-		} else {
-			echo get_the_post_thumbnail();
 		}
 	}
 }
@@ -89,27 +77,20 @@ function colibriwp_post_categories( $attrs = array() ) {
 		),
 		$attrs
 	);
-
-	$html = "";
+	ob_start();
 	if ( $atts['prefix'] !== '' ) {
-		$html .= '<span class="d-inline-block categories-prefix">' . colibriwp_esc_html_preserve_spaces( $atts['prefix'] ) . '</span>';
+		echo '<span class="d-inline-block categories-prefix">' . $atts['prefix'] . '</span>';
 	}
 	if ( $categories ) {
 		foreach ( $categories as $category ) {
-			$html .= sprintf( '<a class="d-inline-block" href="%1$s">%2$s</a>',
+			printf( '<a class="d-inline-block" href="%1$s">%2$s</a>',
 				esc_url( get_category_link( $category->term_id ) ),
 				esc_html( $category->name )
 			);
 		}
-	} else {
-		$html .= sprintf( '<span class="d-inline-block">%s</span>', esc_attr__( 'No Category', 'colibri-wp' ) );
 	}
 
-	echo $html;
-}
-
-function colibriwp_esc_html_preserve_spaces( $text ) {
-	return esc_html( str_replace( " ", "&nbsp;", $text ) );
+	return ob_get_clean();
 }
 
 function colibriwp_post_tags( $attrs = array() ) {
@@ -122,7 +103,7 @@ function colibriwp_post_tags( $attrs = array() ) {
 	$tags = get_the_tags( get_the_ID() );
 	$html = '';
 	if ( $atts['prefix'] !== '' ) {
-		$html .= '<span class="d-inline-block tags-prefix">' . colibriwp_esc_html_preserve_spaces( $atts['prefix'] ) . '</span>';
+		$html .= '<span class="d-inline-block tags-prefix">' . $atts['prefix'] . '</span>';
 	}
 	if ( $tags ) {
 		foreach ( $tags as $tag ) {
@@ -130,11 +111,11 @@ function colibriwp_post_tags( $attrs = array() ) {
 			$html     .= "<a class=\"d-inline-block\" href=\"{$tag_link}\" title=\"{$tag->name} Tag\">";
 			$html     .= "{$tag->name}</a>";
 		}
-	} else {
-		$html .= sprintf( '<span class="d-inline-block">%s</span>', esc_html__( 'No Tag', 'colibri-wp' ) );
 	}
-
+	ob_start();
 	echo $html;
+
+	return ob_get_clean();
 }
 
 
@@ -177,9 +158,11 @@ function colibriwp_print_navigation_button( $type, $button_text ) {
 
 function colibriwp_post_nav_button( $atts = array() ) {
 	$type = $atts['type'];
-	$meta = $atts["{$type}_post"];
+	$meta = esc_html__( $atts["{$type}_post"] );
 
-	$button_text = '<span class="meta-nav" aria-hidden="true">' . $meta . '</span> ' .
+	$meta        = esc_html__( $atts["{$type}_post"] );
+	$button_text = '<span class="meta-nav" aria-hidden="true">'
+	               . $meta . '</span> ' .
 	               '<span class="post-title" title="%title">%title</span>';
 	colibriwp_print_navigation_button( $type, $button_text );
 
@@ -187,10 +170,14 @@ function colibriwp_post_nav_button( $atts = array() ) {
 
 
 function colibriwp_button_pagination( $args, $atts ) {
-	$type          = $atts['type'];
+	$type           = $atts['type'];
 	$nav_direction = colibriwp_get_nav_direction_wp_name( $type );
-	$label         = $atts["{$type}_label"];
-	$link          = call_user_func( "get_{$nav_direction}_posts_link", '<span>' . $label . '</span>' );
+	$label          = $atts["{$type}_label"];
+	$fct_name       = "get_{$nav_direction}_posts_link";
+	$link           = is_customize_preview()
+		? '<a>' . $label . '</a>'
+		: call_user_func( $fct_name,
+			__( '<span>' . $label . '</span>', 'colibri-page-builder' ) );
 	?>
     <div class="navigation" role="navigation">
         <h2 class="screen-reader-text"><?php echo $args['screen_reader_text'] ?></h2>
@@ -203,28 +190,41 @@ function colibriwp_button_pagination( $args, $atts ) {
 
 function colibriwp_numbers_pagination( $args, $atts ) {
 	$links = paginate_links( $args );
+	$empty
+	       = '<span class="page-numbers current">1</span> <a class="page-numbers">2</a>';
 	$template
-	       = '<div class="navigation" role="navigation">' .
-	         '  <h2 class="screen-reader-text">' . $args["screen_reader_text"] . '</h2>' .
-	         '  <div class="nav-links">' .
-	         '      <div class="numbers-navigation">' . $links . '</div>' .
-	         ' </div>' .
-	         '</div>';
+	       = '<div class="navigation" role="navigation">
+            <h2 class="screen-reader-text">' . $args["screen_reader_text"] . '</h2>
+            <div class="nav-links"><div class="numbers-navigation">'
+	         . ( is_customize_preview() ? $empty : $links ) . '</div></div>
+            </div>';
 	echo $template;
 }
 
 
-function colibriwp_render_pagination( $pagination_type, $atts = array(), $args = array() ) {
+function colibriwp_render_pagination(
+	$pagination_type,
+	$atts = array(),
+	$args = array()
+) {
 	$args = wp_parse_args( $args, array(
 		'before_page_number' => '<span class="meta-nav screen-reader-text">'
-		                        . __( 'Page', 'colibri-wp' )
+		                        . __( 'Page', 'colibri-page-builder' )
 		                        . ' </span>',
 		'prev_text'          => '',
 		'next_text'          => '',
 		'prev_next'          => false,
 		'screen_reader_text' => __( 'Posts navigation',
-			'colibri-wp' ),
+			'colibri-page-builder' ),
 	) );
+
+	if ( is_customize_preview() ) {
+		global $wp_query, $paged;
+
+		if ( isset($wp_query->query['paged']) ) {
+			$paged = $wp_query->query['paged'];
+		}
+	}
 
 	call_user_func( $pagination_type, $args, $atts );
 }
@@ -283,7 +283,7 @@ function colibriwp_post_comments( $attrs = array() ) {
 }
 
 function colibriwp_post_comment_form() {
-
+    
 }
 
 function colibriwp_widget_area( $atts ) {
@@ -305,15 +305,23 @@ function colibriwp_widget_area( $atts ) {
 	ob_start();
 	dynamic_sidebar( $id );
 	$content = ob_get_clean();
+
+	$sidebars_widgets = wp_get_sidebars_widgets();
+
+	if ( empty( $sidebars_widgets[ $id ] ) || ! is_array( $sidebars_widgets[ $id ] ) ) {
+		ob_start();
+		colibri_preview_empty_area( $id );
+		$content = ob_get_clean();
+	}
 	echo $content;
 }
 
 function colibriwp_post_meta_time_url() {
-	return '';
+    return '';
 }
 
 function colibriwp_post_meta_time_content() {
-	return get_the_time();
+    return get_the_time();
 }
 
 function colibri_output_sidebar_search_form( $form = '' ) {
@@ -328,20 +336,4 @@ function colibri_output_sidebar_search_form( $form = '' ) {
 function colibriwp_post_comments_template( $form = '' ) {
 	return 'template-parts/blog/comments.php';
 }
-
-function colibriwp_theme_print_footer_copyright() {
-	?>
-    <p>
-        <span style="font-weight: 600;">&copy; <?php echo date( 'Y' ); ?> <?php bloginfo( 'blogname' ); ?></span>.
-		<?php printf( __( 'Built using WordPress and %s', 'colibri-wp' ),
-			'<a target="_blank" href="https://colibriwp.com/">ColibriWP Theme</a>'
-		); ?> .
-    </p>
-	<?php
-}
-
-function colibriwp_print_offscreen_copyright() {
-	echo "&copy; " . date( 'Y' );
-}
-
 add_filter( 'get_search_form', "colibri_output_sidebar_search_form", 100 );

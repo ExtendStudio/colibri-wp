@@ -5,18 +5,13 @@ namespace ColibriWP\Theme\Components;
 
 
 use ColibriWP\Theme\Core\ComponentBase;
+use ColibriWP\Theme\Core\ComponentInterface;
 use ColibriWP\Theme\Core\Hooks;
 use ColibriWP\Theme\Theme;
 use ColibriWP\Theme\Translations;
 use ColibriWP\Theme\View;
 
 class Footer extends ComponentBase {
-
-	public static function selectiveRefreshSelector() {
-		$footer_class = View::isFrontPage() ? "footer-front-page" : "footer-inner-page";
-
-		return ".footer.{$footer_class}";
-	}
 
 	protected static function getOptions() {
 
@@ -42,7 +37,13 @@ class Footer extends ComponentBase {
 		);
 
 	}
-
+/*
+	public function renderContent() {
+		View::partial( "Footer", "Simple", array(
+			"component" => $this,
+		) );
+	}
+*/
 	public function printCopyright() {
 		$colibr_theme_url = sprintf(
 			'<a target="_blank" href="%s" class="mesmerize-theme-link">%s</a>',
@@ -71,9 +72,22 @@ class Footer extends ComponentBase {
 		$footer_class = View::isFrontPage() ? "footer-front-page" : "footer-inner-page";
 
 		?>
-        <div class="footer <?php echo $footer_class; ?>">
-			<?php Theme::getInstance()->get( 'front-footer' )->render(); ?>
-        </div>
+		<div class="footer <?php echo $footer_class; ?>">
+			<?php View::isFrontPage() ? $this->renderFrontPageFragment() : $this->renderInnerPageFragment(); ?>
+		</div>
 		<?php
+	}
+	
+	private function renderFrontPageFragment() {
+
+		Theme::getInstance()->get( 'front-footer' )->render();
+	}
+	private function renderInnerPageFragment() {
+		Theme::getInstance()->get( 'front-footer' )->render();
+	}
+	public function getRenderData() {
+		return array(
+			'mods' => $this->mods(),
+		);
 	}
 }
